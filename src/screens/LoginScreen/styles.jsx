@@ -1,0 +1,114 @@
+import { StyleSheet} from 'react-native';
+
+const styles = StyleSheet.create({
+container:{
+    flex:1,
+    backgroundColor:'white',
+    padding:10,
+},
+backArrowContainer:{
+    backgroundColor:'lightgray',
+    height:40,
+    width:40,
+    borderRadius:25,
+    justifyContent:'center',
+    alignItems:'center',
+},
+welcomeMsg:{
+    flexDirection:'row',
+    justifyContent:'center',
+    gap:10,
+    margin:10,
+    paddingTop:80,
+},
+welcomeText:{
+    fontSize:30,
+    fontWeight:'bold',
+    color:'black',
+    fontFamily:'serif',
+},
+form:{
+    marginVertical:130,
+},
+inputContainer:{
+    borderWidth:1,
+    borderColor:'black',
+    borderRadius:25,
+    height:50,
+    flexDirection:'row',
+    paddingHorizontal:20,
+    alignItems:'center',
+    marginBottom:15,
+},
+textInput:{
+    flex:1,
+    fontSize:20,
+    paddingHorizontal:20,
+    color:'black',
+},
+forgotPasswordText:{
+    textAlign:'right',
+    color:'black',
+    fontWeight:'bold',
+    marginVertical:10,
+    fontSize:18,
+},
+loginButton:{
+    borderWidth:1,
+    height:50,
+    borderRadius:25,
+    alignItems:'center',
+    justifyContent:'center',
+    marginTop:10,
+    backgroundColor:'black',
+},
+buttonLoginText:{
+    fontSize:20,
+    fontWeight:'bold',
+    color:'white',
+},
+continueText:{
+    textAlign:'center',
+    padding:10,
+    marginTop:10,
+    fontSize:18,
+},
+googleButton:{
+    borderWidth:1,
+    height:50,
+    borderRadius:25,
+    alignItems:'center',
+    justifyContent:'center',
+    marginTop:10,
+    backgroundColor:'white',
+    flexDirection:'row',
+    gap:10,
+},
+buttonGoogleText:{
+    fontSize:20,
+    fontWeight:'bold',
+    color:'black',
+},
+googleLogo:{
+    width:21,
+    height:21,
+},
+bottomText:{
+    justifyContent:'center',
+    alignItems:'center',
+    flexDirection:'row',
+    gap:10,
+    marginVertical:20,
+},
+doNotAccountText:{
+    fontSize:18,
+},
+bottomSignUp:{
+    fontSize:20,
+    fontWeight:'bold',
+    color:'black',
+    textDecorationLine:'underline',
+},
+});
+
+export default styles;
