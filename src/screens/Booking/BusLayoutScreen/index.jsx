@@ -64,8 +64,10 @@ const BusLayoutScreen = () => {
         ))}
       </View>
       <View style={styles.seatAvailable}>
-       <Text style={styles.rectangle}/>
-        <Text style={styles.available}>Available seat</Text>
+       <Text style={styles.box1}/>
+        <Text style={styles.available}>available</Text>
+        <Text style={styles.box2}/>
+        <Text style={styles.available}>unavailable</Text>
         </View>
         <TouchableOpacity style={styles.continueButton}>
           <Text style={styles.continueText}>Continue</Text>
