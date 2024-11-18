@@ -2,23 +2,23 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
 container:{
-flex:1,
-backgroundColor:'white',
-alignItems:'center',
+   flex:1,
+   backgroundColor:'white',
+   alignItems:'center',
 },
 welcomeImage:{
-width:300,
-height:300,
-marginVertical:100,
+   width:300,
+   height:300,
+   marginVertical:100,
 },
 title:{
-fontFamily:'serif',
-marginVertical:40,
-fontWeight:'bold',
-fontSize:30,
-color:'black',
-textAlign:'center',
-paddingHorizontal:10,
+   fontFamily:'serif',
+   marginVertical:15,
+   fontWeight:'bold',
+   fontSize:35,
+   color:'black',
+   textAlign:'center',
+   paddingHorizontal:10,
 },
 description:{
     fontWeight:'bold',

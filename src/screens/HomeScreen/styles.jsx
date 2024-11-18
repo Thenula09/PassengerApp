@@ -4,11 +4,13 @@ container:{
   flex:1,
 },
 homeMap:{
-  height:400,
+  height:420,
   backgroundColor:'lightblue',
+  marginBottom:1,
+  marginHorizontal:5,
 },
 message:{
-  backgroundColor:'gray',
+  backgroundColor:'black',
   borderRadius:10,
   margin:5,
   padding:15,
@@ -35,12 +37,14 @@ learnContainer:{
     marginRight:1,
 },
 inputBox: {
-  backgroundColor: '#e7e7e7',
-  margin: 10,
+  backgroundColor: 'lightgray',
+  marginHorizontal:6,
+  marginTop:1,
   padding: 10,
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'center',
+  borderRadius:10,
 },
 inputText: {
   fontSize: 20,
@@ -62,6 +66,7 @@ row: {
   padding: 10,
   borderBottomWidth: 1,
   borderColor: '#dbdbdb',
+  marginTop:5,
 },
 iconContainer: {
   backgroundColor: '#b3b3b3',

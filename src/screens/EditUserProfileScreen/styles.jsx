@@ -69,7 +69,7 @@ textLabel:{
     marginHorizontal:10,
     paddingVertical:5,
 },
-loginButton:{
+saveButton:{
     borderWidth:1,
     height:50,
     borderRadius:25,
@@ -77,18 +77,19 @@ loginButton:{
     justifyContent:'center',
     marginTop:10,
     backgroundColor:'black',
-    width:150,
 },
-buttonLoginText:{
+buttonSaveText:{
     fontSize:20,
     fontWeight:'bold',
     color:'white',
 },
-buttonContainer:{
-    flexDirection:'row',
-    justifyContent:'space-between',
-    marginHorizontal:5,
-},
+errorInput: {
+    borderColor: 'red',
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 5,
+  },
 });
 
 export default styles;

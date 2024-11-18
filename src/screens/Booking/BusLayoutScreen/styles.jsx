@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   selectedSeat: {
-    backgroundColor: 'green', // Updated selected seat color to blue
+    backgroundColor: 'green',
 
   },
   seatText: {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent:'center',
     alignItems:'center',
-    backgroundColor:'orange',
+    backgroundColor:'gray',
     marginLeft:30,
   },
   seatAvailable:{
@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     width: '90%',
     marginLeft:20,
+    marginTop:10,
   },
   continueText: {
     fontSize: 20,
