@@ -9,6 +9,7 @@ import PaymentScreen from './src/screens/Booking/PaymentScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';
 import DestinationSearchScreen from './src/screens/DestinationSearchScreen';
 import BusDetailsScreen from './src/screens/BusDetailsScreen';
+import EditUserProfileScreen from './src/screens/EditUserProfileScreen';
 import { PermissionsAndroid, Platform } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 navigator.geolocation = require('@react-native-community/geolocation');
@@ -49,8 +50,7 @@ const App = () => {
     }
   },[]);
   return (
-
-  <UserProfileScreen/>
+    <EditUserProfileScreen/>
 );
 };
 

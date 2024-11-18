@@ -52,7 +52,7 @@ const HomeScreen = () => {
 
       {/* Home destination */}
       <View style={styles.row}>
-        <View style={[styles.iconContainer, {backgroundColor: '#218cff'}]}>
+        <View style={[styles.iconContainer, {backgroundColor: 'black'}]}>
           <Entypo name={'home'} size={20} color={'#ffffff'} />
         </View>
         <Text style={styles.destinationText}>Matara Bus Stand</Text>

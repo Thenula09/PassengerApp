@@ -40,6 +40,7 @@ const destination = {latitude: 5.9531, longitude: 80.5580};
       />
       </MapView>
     </View>
+    <Text style={styles.availableBuses}>Available Buses</Text>
     </View>
   );
 };

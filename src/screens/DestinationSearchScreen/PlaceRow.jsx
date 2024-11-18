@@ -11,7 +11,7 @@ const PlaceRow = ({ data }) => {
       <View
         style={[
           styles.iconContainer,
-          isMataraBusStand && { backgroundColor: '#218cff' },
+          isMataraBusStand && { backgroundColor: 'black' },
         ]}
       >
         <Entypo

@@ -7,7 +7,7 @@ const WelcomeScreen = () => {
   return (
     <View style={styles.container}>
        {/*Title of app*/}
-      <Text style={styles.title}>Highway Bus Tracking App</Text>
+      <Text style={styles.title}>Highway Bus Booking & Tracking App</Text>
        {/*Home image*/}
       <Image source={require('../../assets/tm_img.jpg')} style={styles.welcomeImage}/>
        {/*Page bottom text*/}

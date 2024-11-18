@@ -7,12 +7,12 @@ container:{
 textInput:{
 backgroundColor:'lightgray',
 marginHorizontal:5,
-marginLeft:20
+marginLeft:20,
 },
 row: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 10,
+    marginVertical: 15,
   },
   iconContainer: {
     backgroundColor: '#a2a2a2',
@@ -21,7 +21,7 @@ row: {
     marginRight: 15,
   },
   locationText: {
-
+   fontSize:15,
   },
   circle: {
     width: 5,
