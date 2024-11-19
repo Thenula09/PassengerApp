@@ -1,9 +1,10 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import styles from './styles';
+import { useNavigation } from '@react-navigation/native';
 
 const WelcomeScreen = () => {
-
+  
   return (
     <View style={styles.container}>
        {/*Title of app*/}
@@ -15,7 +16,8 @@ const WelcomeScreen = () => {
        {/*SignUp & login button container*/}
       <View style={styles.buttonContainer}>
          {/*Login Button*/}
-         <TouchableOpacity style={styles.loginButtonWrapper}>
+         <TouchableOpacity style={styles.loginButtonWrapper}
+         >
           <Text style={styles.loginText}>Login</Text>
          </TouchableOpacity>
          {/*SignUp Button*/}

@@ -12,7 +12,7 @@ import UserProfileScreen from './src/screens/UserProfileScreen';
 const App = () => {
   return (
 
-  <SeatDetailsScreen/>
+  <LoginScreen/>
 );
 };
 
