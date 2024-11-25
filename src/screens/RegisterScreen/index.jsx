@@ -5,14 +5,24 @@ import Foundation from 'react-native-vector-icons/Foundation';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
 import styles from './styles';
+import {useNavigation} from '@react-navigation/native';
 
 const RegisterScreen = () => {
+  const navigation = useNavigation();
+
+  const arrowLogin = () => {
+    navigation.navigate('Welcome');
+  };
+
+  const Login = () => {
+    navigation.navigate('Login');
+  };
 
   return (
     <View style={styles.container}>
        {/*Arrow_back icon*/}
-      <TouchableOpacity style={styles.backArrowContainer}>
-        <Ionicons name={'arrow-back-outline'} color={'black'} size={30}/>
+      <TouchableOpacity style={styles.backArrowContainer} onPress={arrowLogin}>
+        <Ionicons name={'arrow-back-outline'} color={'black'} size={30} />
       </TouchableOpacity>
        {/*Welcome message*/}
           <Text style={styles.welcomeText}>Get Start Now!</Text>
@@ -60,7 +70,7 @@ const RegisterScreen = () => {
            <Text style={styles.alreadyAccountText}>Already have an account?</Text>
          {/*Login button label*/}
            <TouchableOpacity>
-            <Text style={styles.bottomLogin}>Login</Text>
+            <Text style={styles.bottomLogin} onPress={Login}>Login</Text>
            </TouchableOpacity>
         </View>
       </View>

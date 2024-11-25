@@ -2,9 +2,20 @@ import { View, Text, TouchableOpacity, TextInput, ScrollView} from 'react-native
 import React, { useState } from 'react';
 import styles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import {useNavigation} from '@react-navigation/native';
 
 const SeatDetailsScreen = () => {
+
+  const navigation = useNavigation();
+
+  const arrowBusLayout = () => {
+    navigation.navigate('Bus Layout');
+  };
+
+  const gotoPayment = () => {
+    navigation.navigate('Payment');
+  };
+
 
   const [isValid, setIsValid] = useState(true);
 
@@ -31,7 +42,7 @@ const SeatDetailsScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.head}>
-       <TouchableOpacity style={styles.backArrowContainer}>
+       <TouchableOpacity style={styles.backArrowContainer} onPress={arrowBusLayout}>
         <Ionicons name={'arrow-back-outline'} color={'black'} size={30}/>
       </TouchableOpacity>
       <Text style={styles.title}>Seat Details</Text>
@@ -65,7 +76,7 @@ const SeatDetailsScreen = () => {
          {!isValid && email.length > 0 && (
         <Text style={styles.errorText}>Invalid email format</Text>
       )}
-       <TouchableOpacity style={styles.button}>
+       <TouchableOpacity style={styles.button} onPress={gotoPayment}>
         <Text style={styles.buttonText}>Continue to pay</Text>
        </TouchableOpacity>
     </View>

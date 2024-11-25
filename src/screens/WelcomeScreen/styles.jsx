@@ -44,15 +44,16 @@ signUpButtonWrapper:{
     justifyContent:'center',
     alignItems:'center',
     width:'40%',
-   
 },
 loginText:{
 color:'white',
 fontWeight:'bold',
+fontSize:20,
 },
 signUpText:{
 color:'black',
 fontWeight:'bold',
+fontSize:20,
 },
 });
 export default styles;

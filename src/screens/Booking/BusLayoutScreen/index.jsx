@@ -2,12 +2,21 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import styles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useNavigation} from '@react-navigation/native';
 
 const BusLayoutScreen = () => {
-  // State to keep track of selected seats
+  const navigation = useNavigation();
+
+  const SeatDetails = () => {
+    navigation.navigate('Seat Details');
+  };
+
+  const arrowBusDetails = () => {
+    navigation.navigate('Bus Details');
+  };
+
   const [selectedSeats, setSelectedSeats] = useState([]);
 
-  // Define seat arrangement (3-column layout with the last row containing five seats)
   const seatLayout = [
     ['1', '2', '', '3', '4'],
     ['5', '6', '', '7', '8'],
@@ -18,12 +27,10 @@ const BusLayoutScreen = () => {
     ['25', '26', '', '27', '28'],
     ['29', '30', '', '31', '32'],
     ['33', '34', '', '35', '36'],
-    ['37', '38', '', '39', '49'],
-    // Last row with five seats
-    ['41', '42', '43', '44', '45']
+    ['37', '38', '', '39', '40'],
+    ['41', '42', '43', '44', '45'],
   ];
 
-  // Toggle seat selection
   const toggleSeatSelection = (seat) => {
     setSelectedSeats((prevSelectedSeats) =>
       prevSelectedSeats.includes(seat)
@@ -32,7 +39,6 @@ const BusLayoutScreen = () => {
     );
   };
 
-  // Render a single seat with selection highlight
   const renderSeat = (seat) => (
     <TouchableOpacity
       key={seat}
@@ -49,7 +55,7 @@ const BusLayoutScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.head}>
-        <TouchableOpacity style={styles.backArrowContainer}>
+        <TouchableOpacity style={styles.backArrowContainer} onPress={arrowBusDetails}>
           <Ionicons name={'arrow-back-outline'} color={'black'} size={30} />
         </TouchableOpacity>
         <Text style={styles.title}>Select Your Seat</Text>
@@ -69,7 +75,7 @@ const BusLayoutScreen = () => {
         <Text style={styles.box2}/>
         <Text style={styles.available}>unavailable</Text>
         </View>
-        <TouchableOpacity style={styles.continueButton}>
+        <TouchableOpacity style={styles.continueButton} onPress={SeatDetails}>
           <Text style={styles.continueText}>Continue</Text>
         </TouchableOpacity>
     </View>

@@ -4,12 +4,13 @@ const styles = StyleSheet.create({
 map: {
      ...StyleSheet.absoluteFillObject,
 },
-homeMap:{
-     height:450,
-     backgroundColor:'lightblue',
-     borderRadius:25,
-     margin:5,
-},
+backArrowContainer:{
+     height:40,
+     width:40,
+     justifyContent:'center',
+     alignItems:'center',
+     marginVertical:20,
+ },
 availableBuses:{
      fontSize:25,
      fontFamily:'serif',
@@ -18,6 +19,22 @@ availableBuses:{
      marginTop:10,
      textDecorationLine:'underline',
 },
+confirmButton:{
+     borderWidth:1,
+     height:50,
+     borderRadius:25,
+     alignItems:'center',
+     justifyContent:'center',
+     marginTop:280,
+     backgroundColor:'black',
+     width:'90%',
+     marginLeft:20,
+},
+confirm:{
+     fontSize:20,
+     fontWeight:'bold',
+     color:'white',
+}
 });
 export default styles;
 
