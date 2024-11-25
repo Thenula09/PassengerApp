@@ -7,10 +7,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
   },
   backArrowContainer: {
-    backgroundColor: 'lightgray',
     height: 40,
     width: 40,
-    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -19,14 +17,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal:1,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     fontFamily:'serif',
     marginBottom: 0,
-    marginRight: 80,
+    marginRight: 70,
   },
   seatLayout: {
     width: '100%',
@@ -81,7 +79,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent:'center',
     alignItems:'center',
-    backgroundColor:'gray',
+    backgroundColor:'blue',
     marginLeft:30,
   },
   seatAvailable:{

@@ -1,46 +1,28 @@
-import { View, Text } from 'react-native';
+import { View, Text, Dimensions,TouchableOpacity} from 'react-native';
 import React from 'react';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import styles from './styles';
-import MapViewDirections from 'react-native-maps-directions';
+import {useRoute} from '@react-navigation/native';
+import RouteMap from '../../components/RouteMap';
+import {useNavigation} from '@react-navigation/native';
 
-const GOOGLE_MAPS_APIKEY = 'AIzaSyBj9TLJs06OE70ZA3ewrWz_VpiWHxPlp3s';
+const BusDetailsScreen = (props) =>{
+  const navigation = useNavigation();
+  const route = useRoute();
+  const {originPlace, destinationPlace} = route.params;
 
-const BusDetailsScreen = () => {
+  const gotoLayout = () => {
+    navigation.navigate('Bus Layout');
+  };
 
-const origin = {latitude: 5.9431, longitude:80.5490};
-const destination = {latitude: 5.9531, longitude: 80.5580};
   return (
-    <View>
-      <View style={styles.homeMap}>
-    <MapView
-       provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-       style={styles.map}
-       region={{
-         latitude: 5.9431,
-         longitude: 80.5490,
-         latitudeDelta: 0.015,
-         longitudeDelta: 0.0121,
-       }}>
-
-       <MapViewDirections
-       origin={origin}
-       destination={destination}
-       apikey={GOOGLE_MAPS_APIKEY}
-       strokeWidth={5}
-       strokeColor="black"
-     />
-       <Marker
-        coordinate={origin}
-        title={'Origin'}
-      />
-      <Marker
-        coordinate={destination}
-        title={'Destination'}
-      />
-      </MapView>
+    <View style={{display: 'flex', justifyContent: 'space-between'}}>
+    <View style={{height: Dimensions.get('window').height - 400}}>
+      <RouteMap origin={originPlace} destination={destinationPlace} />
     </View>
     <Text style={styles.availableBuses}>Available Buses</Text>
+      <TouchableOpacity style={styles.confirmButton} onPress={gotoLayout}>
+         <Text style={styles.confirm}>Confirm</Text>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -5,14 +5,24 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {useNavigation} from '@react-navigation/native';
 
 const HomeScreen = () => {
+
+  const navigation = useNavigation();
+
+  const gotoSearch = () => {
+    navigation.navigate('Destination Search');
+  };
+
+
   return (
     <View style={styles.container}>
     <View style={styles.homeMap}>
     <MapView
-       provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+       provider={PROVIDER_GOOGLE}
        style={styles.map}
+       showsUserLocation={true}
        region={{
          latitude: 5.9431,
          longitude: 80.5490,
@@ -32,7 +42,7 @@ const HomeScreen = () => {
       </TouchableOpacity>
     </View>
     {/*  Input Box */}
-    <Pressable style={styles.inputBox}>
+    <Pressable style={styles.inputBox} onPress={gotoSearch}>
         <Text style={styles.inputText}>Where To?</Text>
 
         <View style={styles.timeContainer}>

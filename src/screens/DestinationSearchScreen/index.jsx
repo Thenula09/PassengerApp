@@ -1,8 +1,10 @@
 import 'react-native-get-random-values';
-import {View} from 'react-native';
-import React from 'react';
-import styles from './styles';
+import React, { useEffect, useState } from 'react';
+import { View, Pressable } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+import styles from './styles';
 import PlaceRow from './PlaceRow';
 
 const homePlace = {
@@ -11,84 +13,108 @@ const homePlace = {
 };
 const workPlace = {
   description: 'NIBM Matara',
-  geometry: { location: { lat: 5.9493, lng: 80.5463} },
+  geometry: { location: { lat: 5.9493, lng: 80.5463 } },
 };
 
 const DestinationSearchScreen = () => {
+  const [originPlace, setOriginPlace] = useState(null);
+  const [destinationPlace, setDestinationPlace] = useState(null);
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (originPlace && destinationPlace) {
+      navigation.navigate('Bus Details', {
+        originPlace,
+        destinationPlace,
+      });
+    }
+  }, [originPlace, destinationPlace, navigation]);
+
+  const handleHome = () => {
+    navigation.navigate('Home');
+  };
+
   return (
-    <View style={styles.container}>
-     <GooglePlacesAutocomplete
-      placeholder="Where from"
-      onPress={(data, details = null) => {
-        // 'details' is provided when fetchDetails = true
-        console.log(data, details);
-      }}
-      enablePoweredByContainer={false}
-      suppressDefaultStyles
-      currentLocation={true}
-      currentLocationLabel="Current location"
-      styles={{
-        textInput:styles.textInput,
-        container:{
-          position:'absolute',
-          top:0,
-          left:10,
-          right:10,
-        },
-        listView:{
-          position:'absolute',
-          top:105,
-        },
-        separator:{
-          backgroundColor:'#ababab',
-          height:1,
-        },
-      }}
-      query={{
-        key: 'AIzaSyA55BcfnDZ54cEaQyHMRllgX4Fo-niDUN8',
-        language: 'en',
-      }}
-      renderRow={(data) => <PlaceRow data={data} />}
-      renderDescription={(data) => data.description || data.vicinity}
-      predefinedPlaces={[homePlace, workPlace]}
-    />
-     <GooglePlacesAutocomplete
-      placeholder="Where to?"
-      onPress={(data, details = null) => {
-        // 'details' is provided when fetchDetails = true
-        console.log(data, details);
-      }}
-      enablePoweredByContainer={false}
-      suppressDefaultStyles
-      styles={{
-        textInput:styles.textInput,
-        container:{
-          position:'absolute',
-          top:55,
-          left:10,
-          right:10,
-        },
-        separator:{
-          backgroundColor:'#ababab',
-          height:1,
-        },
-      }}
-      query={{
-        key: 'AIzaSyA55BcfnDZ54cEaQyHMRllgX4Fo-niDUN8',
-        language: 'en',
-      }}
-      renderRow={(data) => <PlaceRow data={data} />}
-      renderDescription={(data) => data.description || data.vicinity}
-    />
-      {/* Circle near Origin input */}
-      <View style={styles.circle} />
+    <View style={{ flex: 1 }}>
+      {/* Back button */}
+      <Pressable style={styles.backArrowContainer} onPress={handleHome}>
+        <Ionicons name={'arrow-back-outline'} color={'black'} size={30} />
+      </Pressable>
 
-{/* Line between dots */}
-<View style={styles.line} />
+      <View style={styles.container}>
+        {/* Origin input */}
+        <GooglePlacesAutocomplete
+          placeholder="Where from"
+          onPress={(data, details = null) => {
+            setOriginPlace({ data, details });
+          }}
+          fetchDetails={true}
+          enablePoweredByContainer={false}
+          suppressDefaultStyles
+          currentLocation={true}
+          currentLocationLabel="Current location"
+          styles={{
+            textInput: styles.textInput,
+            container: {
+              position: 'absolute',
+              top: 0,
+              left: 10,
+              right: 10,
+            },
+            listView: {
+              position: 'absolute',
+              top: 105,
+            },
+            separator: {
+              backgroundColor: '#ababab',
+              height: 1,
+            },
+          }}
+          query={{
+            key: 'AIzaSyA55BcfnDZ54cEaQyHMRllgX4Fo-niDUN8',
+            language: 'en',
+          }}
+          renderRow={(data) => <PlaceRow data={data} />}
+          renderDescription={(data) => data.description || data.vicinity}
+          predefinedPlaces={[homePlace, workPlace]}
+        />
 
-{/* Square near Destination input */}
-<View style={styles.square} />
+        {/* Destination input */}
+        <GooglePlacesAutocomplete
+          placeholder="Where to?"
+          onPress={(data, details = null) => {
+            setDestinationPlace({ data, details });
+          }}
+          fetchDetails={true}
+          enablePoweredByContainer={false}
+          suppressDefaultStyles
+          styles={{
+            textInput: styles.textInput,
+            container: {
+              position: 'absolute',
+              top: 55,
+              left: 10,
+              right: 10,
+            },
+            separator: {
+              backgroundColor: '#ababab',
+              height: 1,
+            },
+          }}
+          query={{
+            key: 'AIzaSyA55BcfnDZ54cEaQyHMRllgX4Fo-niDUN8',
+            language: 'en',
+          }}
+          renderRow={(data) => <PlaceRow data={data} />}
+          renderDescription={(data) => data.description || data.vicinity}
+        />
 
+        {/* UI elements: Circle, Line, and Square */}
+        <View style={styles.circle} />
+        <View style={styles.line} />
+        <View style={styles.square} />
+      </View>
     </View>
   );
 };

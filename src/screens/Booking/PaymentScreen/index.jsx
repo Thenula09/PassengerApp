@@ -2,8 +2,16 @@ import { View, Text, Image, TouchableOpacity, TextInput, ScrollView } from 'reac
 import React, { useState } from 'react';
 import styles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useNavigation} from '@react-navigation/native';
 
 const PaymentScreen = () => {
+
+  const navigation = useNavigation();
+
+  const arrowSeatDetails = () => {
+    navigation.navigate('Seat Details');
+  };
+
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cardHolderName, setCardHolderName] = useState('');
@@ -45,7 +53,7 @@ const PaymentScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.head}>
-        <TouchableOpacity style={styles.backArrowContainer}>
+        <TouchableOpacity style={styles.backArrowContainer} onPress={arrowSeatDetails}>
           <Ionicons name={'arrow-back-outline'} color={'black'} size={30}/>
         </TouchableOpacity>
         <Text style={styles.title}>Card Information</Text>

@@ -6,8 +6,22 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './styles';
+import {useNavigation} from '@react-navigation/native';
 
 const LoginScreen = () => {
+  const navigation = useNavigation();
+
+  const arrowLogin = () => {
+    navigation.navigate('Welcome');
+  };
+
+  const register = () => {
+    navigation.navigate('Register');
+  };
+
+  const handleLogin = () => {
+    navigation.navigate('Home');
+  };
 
   const [secureEntry, setSecureEntry] = useState(true);
 
@@ -15,7 +29,7 @@ const LoginScreen = () => {
     <View style={styles.container}>
       {/*Arrow_back icon*/}
       <TouchableOpacity style={styles.backArrowContainer}>
-        <Ionicons name={'arrow-back-outline'} color={'black'} size={30}/>
+        <Ionicons name={'arrow-back-outline'} color={'black'} size={30} onPress={arrowLogin}/>
       </TouchableOpacity>
        {/*Welcome message*/}
        <View style={styles.welcomeMsg}>
@@ -46,7 +60,7 @@ const LoginScreen = () => {
         </TouchableOpacity>
            {/*Login Button*/}
         <TouchableOpacity style={styles.loginButton}>
-          <Text style={styles.buttonLoginText}>Login</Text>
+          <Text style={styles.buttonLoginText} onPress={handleLogin}>Login</Text>
         </TouchableOpacity>
            {/*or continue with text*/}
         <Text style={styles.continueText}>or continue with</Text>
@@ -61,7 +75,7 @@ const LoginScreen = () => {
            <Text style={styles.doNotAccountText}>Don't have an account?</Text>
             {/*signUp button label*/}
            <TouchableOpacity>
-            <Text style={styles.bottomSignUp}>SignUp</Text>
+            <Text style={styles.bottomSignUp} onPress={register}>SignUp</Text>
            </TouchableOpacity>
         </View>
       </View>

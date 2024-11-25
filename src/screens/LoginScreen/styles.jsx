@@ -7,10 +7,8 @@ container:{
     padding:10,
 },
 backArrowContainer:{
-    backgroundColor:'lightgray',
     height:40,
     width:40,
-    borderRadius:25,
     justifyContent:'center',
     alignItems:'center',
 },

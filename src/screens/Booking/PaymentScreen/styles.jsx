@@ -13,10 +13,8 @@ head:{
     marginRight:20,
     },
 backArrowContainer:{
-    backgroundColor:'lightgray',
     height:40,
     width:40,
-    borderRadius:25,
     justifyContent:'center',
     alignItems:'center',
     marginRight:10,
@@ -88,6 +86,7 @@ textInput:{
     height:50,
     fontSize:15,
     color:'gray',
+    paddingHorizontal:10,
 },
 inputContainer:{
     flexDirection: 'row',

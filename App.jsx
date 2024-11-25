@@ -13,7 +13,11 @@ import EditUserProfileScreen from './src/screens/EditUserProfileScreen';
 import { PermissionsAndroid, Platform } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 navigator.geolocation = require('@react-native-community/geolocation');
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
 
+
+const Stack = createNativeStackNavigator();
 
 const App = () => {
 
@@ -50,7 +54,19 @@ const App = () => {
     }
   },[]);
   return (
-    <EditUserProfileScreen/>
+    <NavigationContainer>
+    <Stack.Navigator screenOptions={{headerShown:false}}>
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Destination Search" component={DestinationSearchScreen} />
+      <Stack.Screen name="Bus Details" component={BusDetailsScreen} />
+      <Stack.Screen name="Bus Layout" component={BusLayoutScreen} />
+      <Stack.Screen name="Seat Details" component={SeatDetailsScreen} />
+      <Stack.Screen name="Payment" component={PaymentScreen} />
+    </Stack.Navigator>
+    </NavigationContainer>
 );
 };
 
