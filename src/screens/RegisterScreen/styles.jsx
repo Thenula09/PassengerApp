@@ -20,7 +20,7 @@ welcomeText:{
     paddingTop:50,
 },
 form:{
-    marginVertical:80,
+    marginVertical:40,
 },
 inputContainer:{
     borderWidth:1,
