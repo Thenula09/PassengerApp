@@ -1,102 +1,84 @@
 import React, { useState } from 'react';
-import {View, TouchableOpacity, TextInput, Text, Image, Alert, ScrollView} from 'react-native';
+import { View, TouchableOpacity, TextInput, Text, Image, Alert, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Foundation from 'react-native-vector-icons/Foundation';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
+import database from '@react-native-firebase/database'; // Import Firebase Database
+import auth from '@react-native-firebase/auth'; // Import Firebase Authentication
 import styles from './styles';
-import { auth, database, GoogleSignin, signInWithCredential, GoogleAuthProvider } from '../../firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { ref, set } from 'firebase/database';
-
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
 
+  // State to handle form inputs
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [nic, setNic] = useState('');
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
+  // Navigate back to Welcome screen
   const arrowLogin = () => {
     navigation.navigate('Welcome');
   };
 
+  // Navigate to Login screen
   const Login = () => {
     navigation.navigate('Login');
   };
 
-  const isValidMobile = (mobile) => /^[0-9]{10}$/.test(mobile);
-
-  const isValidEmail = (email) =>
-    /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email);
-
+  // Handle Sign Up
   const handleSignUp = () => {
-    if (!username || !password || !confirmPassword || !nic || !mobile || !email) {
+    // Validate inputs
+    if (!username || !nic || !mobile || !email || !password || !confirmPassword) {
       Alert.alert('Error', 'All fields are required!');
       return;
     }
-
-    if (!isValidMobile(mobile)) {
-      Alert.alert('Error', 'Please enter a valid mobile number (10 digits).');
-      return;
-    }
-
-    if (!isValidEmail(email)) {
-      Alert.alert('Error', 'Please enter a valid email address.');
-      return;
-    }
-
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Passwords do not match!');
       return;
     }
 
-    createUserWithEmailAndPassword(auth, email, password)
+    // Create a new user with Firebase Authentication
+    auth()
+      .createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
+        const userId = userCredential.user.uid;
 
-        set(ref(database, 'users/' + user.uid), {
-          username: username,
-          nic: nic,
-          mobile: mobile,
-          email: email,
-        });
+        // Save additional user details to Firebase Database
+        const newPassenger = {
+          username,
+          nic,
+          mobile,
+          email,
+        };
 
-        Alert.alert('Success', 'Account created successfully!');
-        navigation.navigate('Login');
+        return database()
+          .ref(`/passenger/${userId}`)
+          .set(newPassenger);
+      })
+      .then(() => {
+        Alert.alert('Success', 'Registration Successful!', [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('Login'),
+          },
+        ]);
       })
       .catch((error) => {
-        Alert.alert('Error', error.message);
+        if (error.code === 'auth/email-already-in-use') {
+          Alert.alert('Error', 'This email address is already in use!');
+        } else if (error.code === 'auth/invalid-email') {
+          Alert.alert('Error', 'This email address is invalid!');
+        } else if (error.code === 'auth/weak-password') {
+          Alert.alert('Error', 'Password should be at least 6 characters!');
+        } else {
+          Alert.alert('Error', 'Something went wrong: ' + error.message);
+        }
       });
-  };
-
-  const handleGoogleSignUp = async () => {
-    try {
-      const { idToken } = await GoogleSignin.signIn();
-
-      const googleCredential = GoogleAuthProvider.credential(idToken);
-
-      const userCredential = await signInWithCredential(auth, googleCredential);
-
-      const { user } = userCredential;
-
-      set(ref(database, 'users/' + user.uid), {
-        username: user.displayName,
-        email: user.email,
-      });
-
-      Alert.alert('Success', 'Signed up with Google!');
-      navigation.navigate('Home');
-    } catch (error) {
-      console.error('Google Sign-In Error:', error);
-      Alert.alert('Error', 'Google Sign-In failed. Please try again.');
-    }
   };
 
   return (
@@ -161,18 +143,8 @@ const RegisterScreen = () => {
             placeholderTextColor={'lightgray'}
             value={password}
             onChangeText={setPassword}
-            secureTextEntry={!passwordVisible}
+            secureTextEntry={true}
           />
-          <TouchableOpacity
-            onPress={() => setPasswordVisible(!passwordVisible)}
-            style={styles.eyeIconContainer}
-          >
-            <Ionicons
-              name={passwordVisible ? 'eye' : 'eye-off'}
-              size={20}
-              color="gray"
-            />
-          </TouchableOpacity>
         </View>
 
         <View style={styles.inputContainer}>
@@ -183,18 +155,8 @@ const RegisterScreen = () => {
             placeholderTextColor={'lightgray'}
             value={confirmPassword}
             onChangeText={setConfirmPassword}
-            secureTextEntry={!confirmPasswordVisible}
+            secureTextEntry={true}
           />
-          <TouchableOpacity
-            onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
-            style={styles.eyeIconContainer}
-          >
-            <Ionicons
-              name={confirmPasswordVisible ? 'eye' : 'eye-off'}
-              size={20}
-              color="gray"
-            />
-          </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
@@ -203,7 +165,7 @@ const RegisterScreen = () => {
 
         <Text style={styles.continueText}>or continue with</Text>
 
-        <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignUp}>
+        <TouchableOpacity style={styles.googleButton}>
           <Image
             style={styles.googleLogo}
             source={require('../../assets/download.png')}

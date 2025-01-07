@@ -1,15 +1,17 @@
-import { View, TouchableOpacity, TextInput, Text, Image, Alert, ScrollView } from 'react-native';
+import { View, TouchableOpacity, TextInput, Text, Image, ScrollView } from 'react-native';
 import React, { useState } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../../firebase'; // Firebase auth import
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'; // Firebase authentication functions
+
 import styles from './styles';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const arrowLogin = () => {
     navigation.navigate('Welcome');
@@ -19,43 +21,8 @@ const LoginScreen = () => {
     navigation.navigate('Register');
   };
 
-  const [secureEntry, setSecureEntry] = useState(true);
-  const [email, setEmail] = useState(''); // Email state
-  const [password, setPassword] = useState(''); // Password state
-  const [errorMessage, setErrorMessage] = useState(''); // Error message state
-  const [passwordVisible, setPasswordVisible] = useState(false); // State to toggle password visibility
-
-  // Login function to handle user authentication
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Error','Please fill in both fields');
-      return;
-    }
-
-    try {
-      // Firebase login with email and password
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      navigation.navigate('Home');
-    } catch (error) {
-      Alert.alert('Error',error.message); // Set error message
-    }
-  };
-
-  // Forgot password function to handle password reset email
-  const handleForgotPassword = async () => {
-    if (!email) {
-      Alert.alert('Error','Please enter your email address');
-      return;
-    }
-
-    try {
-      await sendPasswordResetEmail(auth, email); // Send reset password email
-      Alert.alert('Success', 'Password reset email has been sent!');
-    } catch (error) {
-      setErrorMessage('Error sending password reset email');
-    }
+  const handleLogin = () => {
+    navigation.navigate('Home'); // Replace 'Home' with your target screen
   };
 
   return (
@@ -79,8 +46,8 @@ const LoginScreen = () => {
             style={styles.textInput}
             placeholder="Enter your email"
             placeholderTextColor={'lightgray'}
-            value={email} // Bind email state
-            onChangeText={setEmail} // Update email on change
+            value={email}
+            onChangeText={setEmail}
           />
         </View>
 
@@ -89,11 +56,11 @@ const LoginScreen = () => {
           <Fontisto name={'locked'} size={20} color={'gray'} />
           <TextInput
             style={styles.textInput}
-            placeholder=" Enter your password"
+            placeholder="Enter your password"
             placeholderTextColor={'lightgray'}
-            secureTextEntry={secureEntry}
-            value={password} // Bind password state
-            onChangeText={setPassword} // Update password on change
+            secureTextEntry={!passwordVisible}
+            value={password}
+            onChangeText={setPassword}
           />
           {/* Eye icon to toggle password visibility */}
           <TouchableOpacity
@@ -107,14 +74,6 @@ const LoginScreen = () => {
             />
           </TouchableOpacity>
         </View>
-
-        {/* Display error message if any */}
-        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-
-        {/* Forgot Password label */}
-        <TouchableOpacity onPress={handleForgotPassword}>
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-        </TouchableOpacity>
 
         {/* Login Button */}
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
@@ -135,8 +94,8 @@ const LoginScreen = () => {
           {/* Don't have account text */}
           <Text style={styles.doNotAccountText}>Don't have an account?</Text>
           {/* signUp button label */}
-          <TouchableOpacity>
-            <Text style={styles.bottomSignUp} onPress={register}>
+          <TouchableOpacity onPress={register}>
+            <Text style={styles.bottomSignUp}>
               SignUp
             </Text>
           </TouchableOpacity>
