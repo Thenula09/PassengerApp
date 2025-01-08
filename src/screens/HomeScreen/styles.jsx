@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   homeMap: {
-    height: 420,
+    height: 450,
     backgroundColor: 'lightblue',
     marginBottom: 1,
     marginHorizontal: 5,
@@ -45,12 +45,13 @@ const styles = StyleSheet.create({
   inputBox: {
     backgroundColor: 'lightgray',
     marginHorizontal: 6,
-    marginTop: 1,
+    marginTop: 5,
     padding: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderRadius: 10,
+    height:50,
   },
   inputText: {
     fontSize: 20,
@@ -72,9 +73,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingVertical: 10,
-    backgroundColor: '#fff',
     borderTopWidth: 1,
-    borderTopColor: '#ececec',
+    borderTopColor: 'lightgray',
+    marginTop:100,
   },
   navButton: {
     justifyContent: 'center',
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
   },
   navText: {
     fontSize: 12,
-    color: 'gray',
+    color: 'black',
     marginTop: 5,
   },
 });

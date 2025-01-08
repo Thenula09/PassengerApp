@@ -61,27 +61,27 @@ const HomeScreen = () => {
       {/* Search Box */}
       <Pressable style={styles.inputBox} onPress={gotoSearch}>
         <Text style={styles.inputText}>Where To?</Text>
-        <View style={styles.timeContainer}>
+       {/*  <View style={styles.timeContainer}>
           <AntDesign name={'clockcircle'} size={16} color={'#535353'} />
           <Text>Now</Text>
           <MaterialIcons name={'keyboard-arrow-down'} size={16} />
-        </View>
+        </View>*/}
       </Pressable>
 
-      {/* Navigation Buttons */}
+
       <View style={styles.bottomNavigation}>
         <TouchableOpacity style={styles.navButton} onPress={goToUserProfile}>
-          <Entypo name="user" size={30} color="gray" />
+          <Entypo name="user" size={30} color="black" />
           <Text style={styles.navText}>Profile</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navButton} onPress={goToBooking}>
-          <AntDesign name="calendar" size={30} color="gray" />
+          <AntDesign name="calendar" size={30} color="black" />
           <Text style={styles.navText}>Booking</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navButton} onPress={goToBusDetails}>
-          <MaterialIcons name="directions-bus" size={30} color="gray" />
+          <MaterialIcons name="directions-bus" size={30} color="black" />
           <Text style={styles.navText}>Bus Details</Text>
         </TouchableOpacity>
       </View>

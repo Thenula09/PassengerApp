@@ -1,109 +1,99 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+export default StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: '#f8f9fa',
-  },
-  backArrowContainer: {
-    height: 40,
-    width: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
   },
   head: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: 10,
-    paddingHorizontal:1,
+    marginBottom: 20,
+  },
+  backArrowContainer: {
+    marginRight: 10,
   },
   title: {
-    fontSize: 28,
+    fontSize: 25,
     fontWeight: 'bold',
-    fontFamily:'serif',
-    marginBottom: 0,
-    marginRight: 70,
+    marginHorizontal:50,
   },
   seatLayout: {
-    width: '100%',
-    flexDirection: 'column',
+    flex: 1,
     justifyContent: 'center',
-    paddingHorizontal:10,
-    marginBottom: 10,
-    marginTop:10,
+    alignItems: 'center',
+    marginTop: 50,
   },
   row: {
     flexDirection: 'row',
     marginBottom: 10,
-    justifyContent: 'space-around',
-    alignItems: 'center',
   },
   seat: {
-    width: 60,
+    width: 40,
     height: 40,
-    margin: 3,
-    borderRadius: 8,
+    margin: 5,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  spacer: {
-    width: 70, // Space between columns
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
   availableSeat: {
     backgroundColor: 'white',
-    borderWidth: 2,
+  },
+  unavailableSeat: {
+    backgroundColor: 'gray',
   },
   selectedSeat: {
     backgroundColor: 'green',
-
   },
   seatText: {
-    color: 'black',
+    fontSize: 14,
     fontWeight: 'bold',
   },
-  box1:{
-    borderWidth:2,
-    width: 50,
-    height: 30,
-    borderRadius: 8,
-    justifyContent:'center',
-    alignItems:'center',
-    marginLeft:30,
+  spacer: {
+    width: 40,
+    height: 40,
   },
-  box2:{
-    borderWidth:2,
-    width: 50,
-    height: 30,
-    borderRadius: 8,
-    justifyContent:'center',
-    alignItems:'center',
-    backgroundColor:'blue',
-    marginLeft:30,
+  seatAvailable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 70,
+    marginBottom: -20,
+    marginLeft: 90,
   },
-  seatAvailable:{
-    flexDirection:'row',
-    justifyContent:'space-between',
-    alignItems:'center',
-    marginBottom:10,
-    marginRight:10,
+  box1: {
+    width: 20,
+    height: 20,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    marginRight: 5,
   },
-  available:{
-    fontSize:17,
-    fontWeight:'bold',
-    marginRight:20,
+  box2: {
+    width: 20,
+    height: 20,
+    backgroundColor: 'gray',
+    borderWidth: 1,
+    marginRight: 5,
+  },
+  available: {
+    marginRight: 20,
+  },
+  unavailable: {
+    marginRight: 20,
   },
   continueButton: {
     borderWidth: 1,
-    height: 45,
+    height: 50,
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 30,
     backgroundColor: 'black',
-    width: '90%',
-    marginLeft:20,
-    marginTop:10,
+    width: '100%',
+    marginHorizontal: 2,
+    marginVertical: -15,
   },
   continueText: {
     fontSize: 20,
@@ -111,5 +101,3 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
-
-export default styles;
