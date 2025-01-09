@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Dimensions, TouchableOpacity, FlatList } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import database from '@react-native-firebase/database'; // Firebase Realtime Database
+import database from '@react-native-firebase/database';
 import RouteMap from '../../components/RouteMap';
-import styles from './styles'; // Ensure styles file exists and is properly configured
+import styles from './styles';
 
 const BusDetailsScreen = () => {
   const navigation = useNavigation();
@@ -12,26 +12,28 @@ const BusDetailsScreen = () => {
 
   const [availableBuses, setAvailableBuses] = useState([]);
 
-  // Fetch buses from Firebase based on startLocation and endLocation
   useEffect(() => {
-    const fetchAvailableBuses = () => {
-      database()
-        .ref('/buses') // Firebase path
-        .orderByChild('startLocation')
-        .equalTo(originPlace.data.description.trim()) // Match start location
-        .once('value')
-        .then((snapshot) => {
-          const busesData = [];
-          snapshot.forEach((childSnapshot) => {
-            const bus = childSnapshot.val();
-            // Check if the endLocation matches
-            if (bus.endLocation === destinationPlace.data.description.trim()) {
-              busesData.push(bus);
-            }
-          });
-          setAvailableBuses(busesData);
-        })
-        .catch((error) => console.error('Error fetching buses:', error));
+    const fetchAvailableBuses = async () => {
+      try {
+        const snapshot = await database().ref('/buses').once('value');
+        const busesData = [];
+        snapshot.forEach((childSnapshot) => {
+          const bus = childSnapshot.val();
+
+          // Match startLocation and endLocation
+          if (
+            bus.startLocation.trim().toLowerCase() ===
+              originPlace.data.description.trim().toLowerCase() &&
+            bus.endLocation.trim().toLowerCase() ===
+              destinationPlace.data.description.trim().toLowerCase()
+          ) {
+            busesData.push(bus);
+          }
+        });
+        setAvailableBuses(busesData);
+      } catch (error) {
+        console.error('Error fetching buses:', error);
+      }
     };
 
     fetchAvailableBuses();
@@ -41,8 +43,12 @@ const BusDetailsScreen = () => {
     navigation.navigate('Bus Layout', { bus });
   };
 
+  const goToMap = (bus) => {
+    navigation.navigate('BusMapScreen', { currentLocation: bus.currentLocation });
+  };
+
   return (
-    <View style={{ display: 'flex', justifyContent: 'space-between' }}>
+    <View style={{ display: 'flex', justifyContent: 'space-between', flex: 1 }}>
       {/* Map Section */}
       <View style={{ height: Dimensions.get('window').height - 400 }}>
         <RouteMap origin={originPlace} destination={destinationPlace} />
@@ -59,6 +65,7 @@ const BusDetailsScreen = () => {
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
+                alignItems: 'center',
                 padding: 10,
                 marginHorizontal: 10,
                 marginVertical: 5,
@@ -66,17 +73,29 @@ const BusDetailsScreen = () => {
                 borderRadius: 5,
               }}
             >
-              <Text>{item.busNumber} - {item.busHolderNic}</Text>
+              <Text style={{ flex: 1 }}>{item.busNumber} - {item.otherDetails}</Text>
               <TouchableOpacity
                 style={{
                   backgroundColor: '#007bff',
                   paddingHorizontal: 10,
                   paddingVertical: 5,
                   borderRadius: 5,
+                  marginRight: 5,
                 }}
                 onPress={() => gotoLayout(item)}
               >
                 <Text style={{ color: 'white' }}>Select</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#28a745',
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                  borderRadius: 5,
+                }}
+                onPress={() => goToMap(item)}
+              >
+                <Text style={{ color: 'white' }}>Go</Text>
               </TouchableOpacity>
             </View>
           )}

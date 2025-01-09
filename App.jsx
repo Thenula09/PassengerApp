@@ -16,6 +16,7 @@ navigator.geolocation = require('@react-native-community/geolocation');
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import 'react-native-reanimated';
+import BusMapScreen from './src/screens/BusMapScreen/BusMapScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -66,6 +67,7 @@ const App = () => {
       <Stack.Screen name="Bus Layout" component={BusLayoutScreen} />
       <Stack.Screen name="Seat Details" component={SeatDetailsScreen} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Screen name="BusMapScreen" component={BusMapScreen} />
     
     </Stack.Navigator>
     </NavigationContainer>

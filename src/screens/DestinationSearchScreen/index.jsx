@@ -17,13 +17,13 @@ const workPlace = {
 };
 
 const DestinationSearchScreen = () => {
-  const [originPlace, setOriginPlace] = useState(null);
-  const [destinationPlace, setDestinationPlace] = useState(null);
+  const [originPlace, setOriginPlace] = useState(null);//where from
+  const [destinationPlace, setDestinationPlace] = useState(null);// where to
 
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (originPlace && destinationPlace) {
+    if (originPlace && destinationPlace) {// tow select and go next naviget buss detalis page
       navigation.navigate('Bus Details', {
         originPlace,
         destinationPlace,
@@ -32,7 +32,7 @@ const DestinationSearchScreen = () => {
   }, [originPlace, destinationPlace, navigation]);
 
   const handleHome = () => {
-    navigation.navigate('Home');
+    navigation.navigate('Home');// back batn eke obanakota home ekta yanwa
   };
 
   return (
