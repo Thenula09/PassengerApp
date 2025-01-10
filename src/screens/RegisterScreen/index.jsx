@@ -5,8 +5,8 @@ import Foundation from 'react-native-vector-icons/Foundation';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
-import database from '@react-native-firebase/database'; // Import Firebase Database
-import auth from '@react-native-firebase/auth'; // Import Firebase Authentication
+import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
 import styles from './styles';
 
 const RegisterScreen = () => {
@@ -14,13 +14,13 @@ const RegisterScreen = () => {
 
   // State to handle form inputs
   const [username, setUsername] = useState('');
-  const [nic, setNic] = useState('');
+ 
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  // Navigate back to Welcome screen
+  // Navigate to Welcome screen
   const arrowLogin = () => {
     navigation.navigate('Welcome');
   };
@@ -30,10 +30,10 @@ const RegisterScreen = () => {
     navigation.navigate('Login');
   };
 
-  // Handle Sign Up
+
   const handleSignUp = () => {
-    // Validate inputs
-    if (!username || !nic || !mobile || !email || !password || !confirmPassword) {
+
+    if (!username || !mobile || !email || !password || !confirmPassword) {
       Alert.alert('Error', 'All fields are required!');
       return;
     }
@@ -42,16 +42,15 @@ const RegisterScreen = () => {
       return;
     }
 
-    // Create a new user with Firebase Authentication
+    // Create a new user
     auth()
       .createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
         const userId = userCredential.user.uid;
 
-        // Save additional user details to Firebase Database
         const newPassenger = {
           username,
-          nic,
+    
           mobile,
           email,
         };
@@ -98,17 +97,6 @@ const RegisterScreen = () => {
             placeholderTextColor={'lightgray'}
             value={username}
             onChangeText={setUsername}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Fontisto name={'person'} size={20} color={'gray'} />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Enter your NIC number"
-            placeholderTextColor={'lightgray'}
-            value={nic}
-            onChangeText={setNic}
           />
         </View>
 
@@ -163,7 +151,7 @@ const RegisterScreen = () => {
           <Text style={styles.buttonSignUpText}>Sign Up</Text>
         </TouchableOpacity>
 
-        <Text style={styles.continueText}>or continue with</Text>
+       {/*  <Text style={styles.continueText}>or continue with</Text>
 
         <TouchableOpacity style={styles.googleButton}>
           <Image
@@ -171,7 +159,7 @@ const RegisterScreen = () => {
             source={require('../../assets/download.png')}
           />
           <Text style={styles.buttonGoogleText}>Google</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>*/}
 
         <View style={styles.bottomText}>
           <Text style={styles.alreadyAccountText}>Already have an account?</Text>

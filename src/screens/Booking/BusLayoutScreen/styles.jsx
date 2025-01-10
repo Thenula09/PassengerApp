@@ -86,7 +86,7 @@ export default StyleSheet.create({
   continueButton: {
     borderWidth: 1,
     height: 50,
-    borderRadius: 25,
+    borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 30,
