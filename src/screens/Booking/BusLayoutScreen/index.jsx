@@ -1,98 +1,107 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, Alert } from 'react-native';
-import styles from './styles';
+import styles from './styles'; // Ensure you have the correct styles
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 
 const BusLayoutScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { busId } = route.params; // Get busId from route parameters
 
-  const [busId, setBusId] = useState('A123'); // Default bus ID
-  const [seatData, setSeatData] = useState({}); // Firebase seat data
-  const [selectedSeats, setSelectedSeats] = useState([]); // Locally selected seats
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [seatData, setSeatData] = useState({});
 
-  // Firebase seat layout fetch + real-time updates
+  // Fetch seat data from Firebase when the component mounts
   useEffect(() => {
-    const fetchSeatData = async () => {
-      const seatRef = database().ref(`/buses/${busId}/seats`);
+    if (!busId) {
+      console.log('Bus ID not available');
+      return;
+    }
 
-      // Fetch seats once
-      const snapshot = await seatRef.once('value');
-      const data = snapshot.val();
-      setSeatData(data || {}); // Add fallback for null values
+    const seatRef = database().ref(`/buses/${busId}/seats`);
 
-      // Real-time listener
-      seatRef.on('value', (snapshot) => {
-        const liveData = snapshot.val();
-        setSeatData(liveData || {}); // Add fallback for real-time updates
-      });
+    // Listen for seat data updates
+    seatRef.on('value', (snapshot) => {
+      const liveData = snapshot.val();
+      setSeatData(liveData || {}); // Add fallback for real-time updates
+    });
 
-      return () => seatRef.off('value'); // Cleanup listener
-    };
-
-    fetchSeatData();
+    // Cleanup the real-time listener on component unmount
+    return () => seatRef.off('value');
   }, [busId]);
 
-  // Navigate to seat details screen
-  const goToSeatDetails = () => {
-    navigation.navigate('Seat Details', { selectedSeats });
-  };
-
-  // Navigate back to bus list
-  const goBackToBusList = () => {
-    navigation.navigate('Destination Search');
-  };
-
-  // Handle seat selection and deselection
-  const toggleSeatSelection = async (seat) => {
+  // Handle seat selection
+  const toggleSeatSelection = (seat) => {
     if (seatData[seat] === 'booked') {
       Alert.alert('Seat Unavailable', 'This seat is already booked!');
-    } else {
-      // Check if the seat is already selected
-      const updatedSeats = selectedSeats.includes(seat)
-        ? selectedSeats.filter((s) => s !== seat) // Deselect if it's already selected
-        : [...selectedSeats, seat]; // Select if it's not already selected
-
-      setSelectedSeats(updatedSeats);
+      return;
     }
+
+    setSelectedSeats((prevSelectedSeats) =>
+      prevSelectedSeats.includes(seat)
+        ? prevSelectedSeats.filter((s) => s !== seat)
+        : [...prevSelectedSeats, seat]
+    );
   };
 
-  // Confirm selection and send to database
-  const confirmSeatSelection = async () => {
+  // Confirm seat selection and update Firebase
+  const confirmSeatSelection = () => {
     if (selectedSeats.length === 0) {
       Alert.alert('No Seats Selected', 'Please select at least one seat.');
       return;
     }
 
-    // Update selected seats in Firebase
-    selectedSeats.forEach(async (seat) => {
-      await database().ref(`/buses/${busId}/seats/${seat}`).set('booked');
+    // Update the seats to "booked" under `/buses/{busId}/seats`
+    const updates = {};
+    selectedSeats.forEach((seat) => {
+      updates[`/buses/${busId}/seats/${seat}`] = 'booked';
     });
 
-    Alert.alert('Seats Confirmed', 'Your seats have been successfully booked.');
+    // Save the booked seats under a `bookedSeats` node with the busId
+    const bookedSeatsRef = database().ref(`/bookedSeats/${busId}`);
+    const newBookings = selectedSeats.reduce((acc, seat) => {
+      acc[seat] = 'booked';
+      return acc;
+    }, {});
 
-    // Navigate to the seat details page
-    navigation.navigate('Seat Details', { selectedSeats });
+    // Perform the updates
+    database()
+      .ref()
+      .update(updates)
+      .then(() => {
+        return bookedSeatsRef.update(newBookings);
+      })
+      .then(() => {
+        Alert.alert('Success', 'Seats booked successfully!');
+        navigation.navigate('SeatDetailsScreen', {
+          selectedSeats: selectedSeats, // Pass selected seats to the next screen
+          busId: busId, // Pass busId as well
+        });
+      })
+      .catch((error) => {
+        Alert.alert('Error', `Failed to book seats: ${error.message}`);
+      });
   };
 
   // Render a single seat
   const renderSeat = (seat, rowIndex, seatIndex) => (
     <TouchableOpacity
-      key={`${rowIndex}-${seatIndex}`} // Unique key using both rowIndex and seatIndex
+      key={`${rowIndex}-${seatIndex}`}
       style={[
         styles.seat,
         seatData[seat] === 'booked' ? styles.unavailableSeat : styles.availableSeat,
         selectedSeats.includes(seat) && seatData[seat] !== 'booked' && styles.selectedSeat,
       ]}
-      disabled={seatData[seat] === 'booked'} // Disable booked seats
+      disabled={seatData[seat] === 'booked'}
       onPress={() => toggleSeatSelection(seat)}
     >
       <Text style={styles.seatText}>{seat}</Text>
     </TouchableOpacity>
   );
 
-  // Bus seat layout structure
+  // Seat layout (adjust this as needed for your bus layout)
   const seatLayout = [
     ['1', '2', '', '3', '4'],
     ['5', '6', '', '7', '8'],
@@ -104,20 +113,26 @@ const BusLayoutScreen = () => {
     ['29', '30', '', '31', '32'],
     ['33', '34', '', '35', '36'],
     ['37', '38', '', '39', '40'],
-    ['41', '42', '43', '44', '45'], // Last row
+    ['41', '42', '43', '44', '45'],
   ];
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.head}>
-        <TouchableOpacity style={styles.backArrowContainer} onPress={goBackToBusList}>
+        <TouchableOpacity style={styles.backArrowContainer} onPress={() => navigation.goBack()}>
           <Ionicons name={'arrow-back-outline'} color={'black'} size={30} />
         </TouchableOpacity>
         <Text style={styles.title}>Select Your Seat</Text>
       </View>
 
-      {/* Seat Layout */}
+      <View style={styles.busInfoContainer}>
+        {busId ? (
+          <Text style={styles.busIdText}>Bus ID: {busId}</Text>
+        ) : (
+          <Text style={styles.busIdText}>Bus ID not available</Text>
+        )}
+      </View>
+
       <View style={styles.seatLayout}>
         {seatLayout.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.row}>
@@ -128,7 +143,6 @@ const BusLayoutScreen = () => {
         ))}
       </View>
 
-      {/* Seat Info */}
       <View style={styles.seatAvailable}>
         <Text style={styles.box1} />
         <Text style={styles.available}>Available</Text>
@@ -136,7 +150,6 @@ const BusLayoutScreen = () => {
         <Text style={styles.unavailable}>Unavailable</Text>
       </View>
 
-      {/* Confirm Button */}
       <TouchableOpacity style={styles.continueButton} onPress={confirmSeatSelection}>
         <Text style={styles.continueText}>Confirm Selection</Text>
       </TouchableOpacity>

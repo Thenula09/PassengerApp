@@ -31,7 +31,7 @@ form:{
 inputContainer:{
     borderWidth:1,
     borderColor:'black',
-    borderRadius:25,
+    borderRadius:5,
     height:50,
     flexDirection:'row',
     paddingHorizontal:20,
@@ -52,16 +52,15 @@ forgotPasswordText:{
     fontSize:18,
 },
 loginButton:{
-    borderWidth:1,
     height:50,
-    borderRadius:25,
+    borderRadius:5,
     alignItems:'center',
     justifyContent:'center',
     marginTop:10,
     backgroundColor:'black',
 },
 buttonLoginText:{
-    fontSize:20,
+    fontSize:22,
     fontWeight:'bold',
     color:'white',
 },

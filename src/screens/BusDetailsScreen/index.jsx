@@ -11,28 +11,42 @@ const BusDetailsScreen = () => {
   const { originPlace, destinationPlace } = route.params;
 
   const [availableBuses, setAvailableBuses] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const fetchAvailableBuses = async () => {
       try {
         const snapshot = await database().ref('/buses').once('value');
         const busesData = [];
+
         snapshot.forEach((childSnapshot) => {
           const bus = childSnapshot.val();
+          const busId = childSnapshot.key; // Get the busId (key of the child)
 
-          // Match startLocation and endLocation
+          // Ensure that the bus data includes startLocation and endLocation
           if (
-            bus.startLocation.trim().toLowerCase() ===
-              originPlace.data.description.trim().toLowerCase() &&
-            bus.endLocation.trim().toLowerCase() ===
-              destinationPlace.data.description.trim().toLowerCase()
+            bus.startLocation &&
+            bus.endLocation &&
+            originPlace?.data?.description &&
+            destinationPlace?.data?.description
           ) {
-            busesData.push(bus);
+            if (
+              bus.startLocation.trim().toLowerCase() ===
+                originPlace.data.description.trim().toLowerCase() &&
+              bus.endLocation.trim().toLowerCase() ===
+                destinationPlace.data.description.trim().toLowerCase()
+            ) {
+              busesData.push({ ...bus, busId }); // Add busId to the bus object
+            }
+          } else {
+            console.warn('Invalid bus data or missing location fields:', bus);
           }
         });
+
         setAvailableBuses(busesData);
       } catch (error) {
         console.error('Error fetching buses:', error);
+        setErrorMessage('Could not fetch buses. Please try again later.');
       }
     };
 
@@ -40,11 +54,19 @@ const BusDetailsScreen = () => {
   }, [originPlace, destinationPlace]);
 
   const gotoLayout = (bus) => {
-    navigation.navigate('Bus Layout', { bus });
+    // Pass the busId to the BusLayoutScreen
+    navigation.navigate('Bus Layout', { busId: bus.busId });
   };
 
   const goToMap = (bus) => {
-    navigation.navigate('BusMapScreen', { currentLocation: bus.currentLocation });
+    // Assuming the bus object contains both bus and driver information
+    const { currentLocation, driverLocation } = bus;
+
+    // Passing both locations to the BusMapScreen
+    navigation.navigate('BusMapScreen', {
+      currentLocation: currentLocation,
+      driverLocation: driverLocation,
+    });
   };
 
   return (
@@ -56,7 +78,9 @@ const BusDetailsScreen = () => {
 
       {/* Bus Details Section */}
       <Text style={styles.availableBuses}>Available Buses</Text>
-      {availableBuses.length > 0 ? (
+      {errorMessage ? (
+        <Text style={{ textAlign: 'center', margin: 30, color: 'red' }}>{errorMessage}</Text>
+      ) : availableBuses.length > 0 ? (
         <FlatList
           data={availableBuses}
           keyExtractor={(item, index) => index.toString()}
@@ -73,29 +97,31 @@ const BusDetailsScreen = () => {
                 borderRadius: 5,
               }}
             >
-              <Text style={{ flex: 1 }}>{item.busNumber} - {item.otherDetails}</Text>
+              <Text style={{ flex: 1,  fontSize:20}}>
+                {item.busNumber}  {/* Displaying bus number and busId */}
+              </Text>
               <TouchableOpacity
                 style={{
-                  backgroundColor: '#007bff',
+                 backgroundColor: "black",
                   paddingHorizontal: 10,
-                  paddingVertical: 5,
-                  borderRadius: 5,
+                  paddingVertical: 7,
+                  borderRadius: 7,
                   marginRight: 5,
                 }}
-                onPress={() => gotoLayout(item)}
+                onPress={() => gotoLayout(item)}  // Trigger the bus layout navigation
               >
-                <Text style={{ color: 'white' }}>Select</Text>
+                <Text style={{ color: 'white',  }}>Booking</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
-                  backgroundColor: '#28a745',
+                  backgroundColor: 'black',
                   paddingHorizontal: 10,
-                  paddingVertical: 5,
-                  borderRadius: 5,
+                  paddingVertical: 7,
+                  borderRadius: 7,
                 }}
-                onPress={() => goToMap(item)}
+                onPress={() => goToMap(item)} // Pass bus location and driver location to map
               >
-                <Text style={{ color: 'white' }}>Go</Text>
+                <Text style={{ color: 'white' }}>Map</Text>
               </TouchableOpacity>
             </View>
           )}

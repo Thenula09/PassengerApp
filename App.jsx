@@ -5,7 +5,6 @@ import RegisterScreen from './src/screens/RegisterScreen';
 import BusLayoutScreen from './src/screens/Booking/BusLayoutScreen';
 import SeatDetailsScreen from './src/screens/Booking/SeatDetailsScreen';
 import HomeScreen from './src/screens/HomeScreen';
-import PaymentScreen from './src/screens/Booking/PaymentScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';
 import DestinationSearchScreen from './src/screens/DestinationSearchScreen';
 import BusDetailsScreen from './src/screens/BusDetailsScreen';
@@ -66,9 +65,10 @@ const App = () => {
       <Stack.Screen name="Bus Details" component={BusDetailsScreen} />
       <Stack.Screen name="Bus Layout" component={BusLayoutScreen} />
       <Stack.Screen name="Seat Details" component={SeatDetailsScreen} />
-      <Stack.Screen name="Payment" component={PaymentScreen} />
       <Stack.Screen name="BusMapScreen" component={BusMapScreen} />
-    
+      <Stack.Screen name="BusLayoutScreen" component={BusLayoutScreen} />
+      <Stack.Screen name="SeatDetailsScreen" component={SeatDetailsScreen} />
+
     </Stack.Navigator>
     </NavigationContainer>
 );

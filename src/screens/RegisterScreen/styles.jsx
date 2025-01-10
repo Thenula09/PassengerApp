@@ -25,7 +25,7 @@ form:{
 inputContainer:{
     borderWidth:1,
     borderColor:'black',
-    borderRadius:25,
+    borderRadius:5,
     height:50,
     flexDirection:'row',
     paddingHorizontal:20,
@@ -41,7 +41,7 @@ textInput:{
 signUpButton:{
     borderWidth:1,
     height:50,
-    borderRadius:25,
+    borderRadius:5,
     alignItems:'center',
     justifyContent:'center',
     marginTop:10,

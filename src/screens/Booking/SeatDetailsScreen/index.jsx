@@ -1,106 +1,146 @@
-import { View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, TextInput, ScrollView, Alert } from 'react-native';
+import React, { useState } from 'react';
 import styles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import database from '@react-native-firebase/database';
 
 const SeatDetailsScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute();  // Accessing passed parameters from navigation
+  const route = useRoute();
 
-  // Get the selected seats from the route params
-  const { selectedSeats } = route.params || [];
+  // Get busId from route.params
+  const busId = route.params?.busId; // `busId` එක Bus Layout එකෙන් pass වෙන්න ඕනේ
 
-  const [isValid, setIsValid] = useState(true);
+  // Dummy data for testing
+  const totalPayment = 1000; // Replace with dynamic total payment value
+  const fromLocation = 'Matara Bus Stand';
+  const toLocation = 'Colombo';
 
-  // Email validation
-  const [email, setEmail] = useState('');
-  const validateEmail = (text) => {
-    setEmail(text);
+  // State and validation logic
+  const [cardHolderName, setCardHolderName] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [errors, setErrors] = useState({});
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    setIsValid(emailPattern.test(text));
+  const validateFields = () => {
+    let newErrors = {};
+    if (!cardHolderName) newErrors.cardHolderName = 'Required';
+    if (!cardNumber) newErrors.cardNumber = 'Required';
+    if (!expiryDate) newErrors.expiryDate = 'Required';
+    if (!cvv) newErrors.cvv = 'Required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  // Phone number validation
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const validatePhoneNumber = (text) => {
-    setPhoneNumber(text);
+  const handlePayPress = () => {
+    if (validateFields()) {
+      if (!busId) {
+        Alert.alert('Error', 'Bus ID not found!');
+        return;
+      }
 
-    if (text.length === 10 && /^[0-9]+$/.test(text)) {
-      setIsValid(true);
-    } else {
-      setIsValid(false);
+      // Save only necessary details to Firebase (excluding cardHolderName, fromLocation, and toLocation)
+      const paymentDetails = {
+        busId: busId,
+        total: `LKR ${totalPayment}`,
+        paymentTimestamp: new Date().toISOString(),
+      };
+
+      database()
+        .ref(`/payments/${busId}`)
+        .push(paymentDetails)
+        .then(() => {
+          Alert.alert('Payment Successful', 'Your payment has been processed successfully!', [
+            {
+              text: 'OK',
+              onPress: () => navigation.navigate('SuccessScreen'),
+            },
+          ]);
+        })
+        .catch((error) => {
+          Alert.alert('Error', `Failed to process payment: ${error.message}`);
+        });
     }
-  };
-
-  // Navigate back to Bus Layout screen
-  const arrowBusLayout = () => {
-    navigation.navigate('Bus Layout');
-  };
-
-  const gotoPayment = () => {
-    navigation.navigate('Payment');
   };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.head}>
-        <TouchableOpacity style={styles.backArrowContainer} onPress={arrowBusLayout}>
-          <Ionicons name={'arrow-back-outline'} color={'black'} size={30} />
+        <TouchableOpacity style={styles.backArrowContainer} onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back-outline" color="black" size={30} />
         </TouchableOpacity>
-        <Text style={styles.title}>Seat Details</Text>
+        <Text style={styles.title}>Payment</Text>
       </View>
+
       <View style={styles.form}>
         <Text style={styles.text}>Where from</Text>
-        <TextInput style={styles.textInput} editable={false}>Matara Bus Stand</TextInput>
+        <TextInput style={styles.textInput} editable={false} value={fromLocation} />
 
         <Text style={styles.text}>Where to</Text>
-        <TextInput style={styles.textInput} editable={false} />
-
-        <Text style={styles.text}>Seats</Text>
-        <TextInput
-          style={styles.textInput}
-          editable={false}
-          value={selectedSeats ? selectedSeats.join(', ') : ''}  // Displaying selected seats
-        />
+        <TextInput style={styles.textInput} editable={false} value={toLocation} />
 
         <Text style={styles.text}>Total</Text>
-        <TextInput style={styles.textInput} editable={false} />
+        <TextInput style={styles.textInput} editable={false} value={`LKR ${totalPayment}`} />
 
-        <Text style={styles.text}>Passenger name</Text>
-        <TextInput style={styles.textInput} placeholder="Enter passenger name" placeholderTextColor={'lightgray'} />
+        <View style={styles.fieldContainer}>
+          {errors.cardHolderName && <Text style={styles.errorText}>{errors.cardHolderName}</Text>}
+          <Text style={styles.text}>Card holder name</Text>
+          <TextInput
+            style={[styles.textInput, errors.cardHolderName ? styles.errorBorder : null]}
+            placeholder="Card holder name"
+            placeholderTextColor="lightgray"
+            value={cardHolderName}
+            onChangeText={setCardHolderName}
+          />
+        </View>
 
-        <Text style={styles.text}>Mobile number</Text>
-        <TextInput
-          style={[styles.textInput, !isValid && styles.errorInput]}
-          placeholder="07x xxx xxxx"
-          placeholderTextColor={'lightgray'}
-          keyboardType={'number-pad'}
-          value={phoneNumber}
-          onChangeText={validatePhoneNumber}
-          maxLength={10}
-        />
-        {!isValid && phoneNumber.length > 0 && (
-          <Text style={styles.errorText}>Mobile number must be exactly 10 digits</Text>
-        )}
+        <View style={styles.fieldContainer}>
+          {errors.cardNumber && <Text style={styles.errorText}>{errors.cardNumber}</Text>}
+          <Text style={styles.text}>Card number</Text>
+          <TextInput
+            style={[styles.textInput, errors.cardNumber ? styles.errorBorder : null]}
+            placeholder="xxxx xxxx xxxx xxxx"
+            placeholderTextColor="lightgray"
+            keyboardType="number-pad"
+            value={cardNumber}
+            onChangeText={setCardNumber}
+            maxLength={19}
+          />
+        </View>
 
-        <Text style={styles.text}>Email</Text>
-        <TextInput
-          style={[styles.textInput, !isValid && styles.errorInput]}
-          placeholder="user@domain.com"
-          placeholderTextColor={'lightgray'}
-          value={email}
-          onChangeText={validateEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        {!isValid && email.length > 0 && (
-          <Text style={styles.errorText}>Invalid email format</Text>
-        )}
+        <View style={styles.fieldContainer}>
+          {errors.expiryDate && <Text style={styles.errorText}>{errors.expiryDate}</Text>}
+          <Text style={styles.text}>Expiry date</Text>
+          <TextInput
+            style={[styles.textInput, errors.expiryDate ? styles.errorBorder : null]}
+            placeholder="MM/YY"
+            placeholderTextColor="lightgray"
+            keyboardType="number-pad"
+            value={expiryDate}
+            onChangeText={setExpiryDate}
+            maxLength={5}
+          />
+        </View>
 
-        <TouchableOpacity style={styles.button} onPress={gotoPayment}>
-          <Text style={styles.buttonText}>Continue to pay</Text>
+        <View style={styles.fieldContainer}>
+          {errors.cvv && <Text style={styles.errorText}>{errors.cvv}</Text>}
+          <Text style={styles.text}>CVV</Text>
+          <TextInput
+            style={[styles.textInput, errors.cvv ? styles.errorBorder : null]}
+            placeholder="xxx"
+            placeholderTextColor="lightgray"
+            keyboardType="number-pad"
+            value={cvv}
+            onChangeText={setCvv}
+            maxLength={3}
+          />
+        </View>
+
+        <TouchableOpacity style={styles.payButton} onPress={handlePayPress}>
+          <Text style={styles.pay}>Pay</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
