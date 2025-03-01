@@ -17,11 +17,17 @@ import { NavigationContainer } from '@react-navigation/native';
 import 'react-native-reanimated';
 import BusMapScreen from './src/screens/BusMapScreen/BusMapScreen';
 import StartingScreen from './src/screens/StartingScreen';
+import SplashScreen from 'react-native-splash-screen';
 
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  
+  useEffect(() => {
+    SplashScreen.hide();
+  })
+  
 
   const androidPermission = async () => {
     try {

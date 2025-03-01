@@ -31,7 +31,7 @@ const WelcomeScreen = () => {
       </View>
 
        {/*Home image*/}
-      <Image source={require('../../assets/welcome-img.png')} style={styles.welcomeImage}/>
+      <Image source={require('../../assets/welcome.png')} style={styles.welcomeImage}/>
      
          {/*Login Button*/}
          <TouchableOpacity style={styles.loginButtonWrapper} onPress={handleLogin}>
