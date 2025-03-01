@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import styles from './styles';
+import LinearGradient from 'react-native-linear-gradient';
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
@@ -50,7 +51,6 @@ const RegisterScreen = () => {
 
         const newPassenger = {
           username,
-    
           mobile,
           email,
         };
@@ -81,16 +81,29 @@ const RegisterScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <LinearGradient
+    colors={['#6DD5FA', '#C471ED', '#F64F59']}
+      style={styles.container}
+    >
       <TouchableOpacity style={styles.backArrowContainer} onPress={arrowLogin}>
-        <Ionicons name={'arrow-back-outline'} color={'black'} size={30} />
+        <Ionicons name={'arrow-back-outline'} color={'white'} size={30} />
       </TouchableOpacity>
-
-      <Text style={styles.welcomeText}>Get Started Now!</Text>
+      <View style={styles.welcomeMsg}>
+        <View style={styles.tiImg}>
+          <Text style={styles.welcomeText}>Create Account</Text>
+          <Text style={styles.img}>👇</Text>
+          </View>
+          <Text style={styles.p}>Please enter your details</Text>
+      </View>
+      {/* Scrollable Form */}
+            <ScrollView 
+              contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 10 }} 
+              keyboardShouldPersistTaps='never'
+            >
 
       <View style={styles.form}>
         <View style={styles.inputContainer}>
-          <Feather name={'user'} size={20} color={'gray'} />
+          <Feather name={'user'} size={20} color={'white'} />
           <TextInput
             style={styles.textInput}
             placeholder="Enter username"
@@ -101,7 +114,7 @@ const RegisterScreen = () => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Foundation name={'telephone'} size={20} color={'gray'} />
+          <Foundation name={'telephone'} size={20} color={'white'} />
           <TextInput
             style={styles.textInput}
             placeholder="Enter your mobile number"
@@ -113,7 +126,7 @@ const RegisterScreen = () => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Fontisto name={'email'} size={20} color={'gray'} />
+          <Fontisto name={'email'} size={20} color={'white'} />
           <TextInput
             style={styles.textInput}
             placeholder="Enter your email"
@@ -124,7 +137,7 @@ const RegisterScreen = () => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Fontisto name={'locked'} size={20} color={'gray'} />
+          <Fontisto name={'locked'} size={20} color={'white'} />
           <TextInput
             style={styles.textInput}
             placeholder="Enter password"
@@ -136,7 +149,7 @@ const RegisterScreen = () => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Fontisto name={'locked'} size={20} color={'gray'} />
+          <Fontisto name={'locked'} size={20} color={'white'} />
           <TextInput
             style={styles.textInput}
             placeholder="Confirm password"
@@ -168,7 +181,8 @@ const RegisterScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 };
 

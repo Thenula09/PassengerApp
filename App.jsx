@@ -16,6 +16,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import 'react-native-reanimated';
 import BusMapScreen from './src/screens/BusMapScreen/BusMapScreen';
+import StartingScreen from './src/screens/StartingScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -57,6 +58,7 @@ const App = () => {
   return (
     <NavigationContainer>
     <Stack.Navigator screenOptions={{headerShown:false}}>
+      <Stack.Screen name="Start" component={StartingScreen} />
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />

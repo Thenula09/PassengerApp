@@ -3,8 +3,9 @@ import { StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
 container:{
     flex:1,
-    backgroundColor:'white',
     padding:10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Transparent white
+    backdropFilter: 'blur(10px)',
 },
 backArrowContainer:{
     height:40,
@@ -12,19 +13,43 @@ backArrowContainer:{
     justifyContent:'center',
     alignItems:'center',
 },
+welcomeMsg:{
+    justifyContent:'center',
+    gap:2,
+    margin:10,
+    paddingTop:30,
+},
 welcomeText:{
-    fontSize:30,
+    fontSize:40,
     fontWeight:'bold',
-    color:'black',
-    fontFamily:'serif',
+    color:'white',
+    //fontFamily:'serif',
     paddingTop:50,
 },
+p:{
+    fontSize:20,
+    color:'lightgray',
+    fontWeight:'bold'
+},
+tiImg:{
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    marginHorizontal:10,
+    marginRight:90
+    
+  },
+  img:{
+    fontSize:40,
+    marginTop:60,
+    marginLeft:10
+  },
 form:{
     marginVertical:40,
 },
 inputContainer:{
     borderWidth:1,
-    borderColor:'black',
+    borderColor:'white',
     borderRadius:5,
     height:50,
     flexDirection:'row',
@@ -39,13 +64,12 @@ textInput:{
     color:'black',
 },
 signUpButton:{
-    borderWidth:1,
     height:50,
     borderRadius:5,
     alignItems:'center',
     justifyContent:'center',
     marginTop:10,
-    backgroundColor:'black',
+    backgroundColor: 'rgba(245, 240, 240, 0.3)',
 },
 buttonSignUpText:{
     fontSize:20,
@@ -87,11 +111,12 @@ bottomText:{
 },
 alreadyAccountText:{
     fontSize:18,
+    color:'white'
 },
 bottomLogin:{
     fontSize:20,
     fontWeight:'bold',
-    color:'black',
+    color:'white',
     textDecorationLine:'underline',
 },
 });

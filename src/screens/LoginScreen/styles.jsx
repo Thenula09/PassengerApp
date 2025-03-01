@@ -3,8 +3,9 @@ import { StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
 container:{
     flex:1,
-    backgroundColor:'white',
     padding:10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Transparent white
+    backdropFilter: 'blur(10px)',
 },
 backArrowContainer:{
     height:40,
@@ -13,24 +14,28 @@ backArrowContainer:{
     alignItems:'center',
 },
 welcomeMsg:{
-    flexDirection:'row',
     justifyContent:'center',
-    gap:10,
+    gap:2,
     margin:10,
     paddingTop:80,
 },
 welcomeText:{
-    fontSize:30,
+    fontSize:40,
     fontWeight:'bold',
-    color:'black',
-    fontFamily:'serif',
+    color:'white',
+    //fontFamily:'serif',
+},
+p:{
+    fontSize:20,
+    color:'lightgray',
+    fontWeight:'bold'
 },
 form:{
     marginVertical:130,
 },
 inputContainer:{
     borderWidth:1,
-    borderColor:'black',
+    borderColor:'white',
     borderRadius:5,
     height:50,
     flexDirection:'row',
@@ -46,7 +51,7 @@ textInput:{
 },
 forgotPasswordText:{
     textAlign:'right',
-    color:'black',
+    color:'white',
     fontWeight:'bold',
     marginVertical:10,
     fontSize:18,
@@ -57,7 +62,9 @@ loginButton:{
     alignItems:'center',
     justifyContent:'center',
     marginTop:10,
-    backgroundColor:'black',
+    backgroundColor: 'rgba(245, 240, 240, 0.3)',
+    borderColor:'white',
+   
 },
 buttonLoginText:{
     fontSize:22,
@@ -99,11 +106,12 @@ bottomText:{
 },
 doNotAccountText:{
     fontSize:18,
+    color:'white'
 },
 bottomSignUp:{
     fontSize:20,
     fontWeight:'bold',
-    color:'black',
+    color:'white',
     textDecorationLine:'underline',
 },
 });
