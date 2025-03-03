@@ -4,7 +4,6 @@ const styles = StyleSheet.create({
 container:{
     flex:1,
     padding:10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Transparent white
     backdropFilter: 'blur(10px)',
 },
 backArrowContainer:{
