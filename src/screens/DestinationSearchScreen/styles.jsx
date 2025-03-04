@@ -1,9 +1,9 @@
 import { StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
-container:{
-    height:'100%',
-    marginVertical:10,
-},
+  container:{
+    flex:1,
+    backdropFilter: 'blur(10px)',
+ },
 backArrowContainer:{
   height:40,
   width:40,
@@ -13,11 +13,11 @@ backArrowContainer:{
   marginLeft:10,
 },
 textInput:{
-  backgroundColor:'lightgray',
+  backgroundColor: 'rgba(255, 255, 255, 0.2)',
   marginHorizontal:5,
   marginLeft:20,
   height:45,
-  fontSize:15,
+  fontSize:18,
 },
 row: {
     flexDirection: 'row',
@@ -25,13 +25,14 @@ row: {
     marginVertical: 17,
   },
   iconContainer: {
-    backgroundColor: '#a2a2a2',
+    backgroundColor: 'white',
     padding: 5,
     borderRadius: 50,
     marginRight: 15,
   },
   locationText: {
    fontSize:15,
+   color:'white'
   },
   circle: {
     width: 5,

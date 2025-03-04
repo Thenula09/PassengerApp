@@ -2,7 +2,8 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex:1,
+    backdropFilter: 'blur(10px)',
   },
   homeMap: {
     height: 530,
@@ -11,7 +12,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   message: {
-    backgroundColor: 'black',
+    backgroundColor:'rgba(255, 255, 255, 0.2)',
     borderRadius: 10,
     marginTop: 5,
     padding: 15,
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
   },
   field: {
     color: 'white',
-    paddingVertical: 5,
+    paddingVertical: 9,
   },
   learnMore: {
     color: 'white',
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
 
   // Search Box Style
   inputBox: {
-    backgroundColor: 'lightgray',
+    backgroundColor: 'rgba(245, 240, 240, 0.3)',
     marginHorizontal: 6,
     marginTop:5,
     padding: 10,
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
   inputText: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#434343',
+    color: 'white',
   },
   timeContainer: {
     flexDirection: 'row',
@@ -73,9 +74,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 20,
     borderTopWidth: 1,
-    borderTopColor: 'lightgray',
+    borderTopColor: 'white',
     marginTop:20,
   },
   navButton: {
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
   },
   navText: {
     fontSize: 12,
-    color: 'black',
+    color: 'white',
     marginTop: 5,
   },
 });

@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import PlaceRow from './PlaceRow';
+import LinearGradient from 'react-native-linear-gradient';
 
 const homePlace = {
   description: 'Matara Bus Stand',
@@ -36,10 +37,13 @@ const DestinationSearchScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <LinearGradient
+    colors={['#6DD5FA', '#C471ED', '#F64F59']}
+      style={styles.container}
+    >
       {/* Back button */}
       <Pressable style={styles.backArrowContainer} onPress={handleHome}>
-        <Ionicons name={'arrow-back-outline'} color={'black'} size={30} />
+        <Ionicons name={'arrow-back-outline'} color={'white'} size={30} />
       </Pressable>
 
       <View style={styles.container}>
@@ -67,7 +71,7 @@ const DestinationSearchScreen = () => {
               top: 105,
             },
             separator: {
-              backgroundColor: '#ababab',
+              backgroundColor: 'white',
               height: 1,
             },
           }}
@@ -98,7 +102,7 @@ const DestinationSearchScreen = () => {
               right: 10,
             },
             separator: {
-              backgroundColor: '#ababab',
+              backgroundColor: 'white',
               height: 1,
             },
           }}
@@ -115,7 +119,7 @@ const DestinationSearchScreen = () => {
         <View style={styles.line} />
         <View style={styles.square} />
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
