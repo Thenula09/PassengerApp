@@ -6,7 +6,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import PlaceRow from './PlaceRow';
-import LinearGradient from 'react-native-linear-gradient';
 
 const homePlace = {
   description: 'Matara Bus Stand',
@@ -37,13 +36,12 @@ const DestinationSearchScreen = () => {
   };
 
   return (
-    <LinearGradient
-    colors={['#6DD5FA', '#C471ED', '#F64F59']}
+    <View
       style={styles.container}
     >
       {/* Back button */}
       <Pressable style={styles.backArrowContainer} onPress={handleHome}>
-        <Ionicons name={'arrow-back-outline'} color={'white'} size={30} />
+        <Ionicons name={'arrow-back-outline'} color={'black'} size={30} />
       </Pressable>
 
       <View style={styles.container}>
@@ -63,16 +61,19 @@ const DestinationSearchScreen = () => {
             container: {
               position: 'absolute',
               top: 0,
-              left: 10,
+              left: 30,
               right: 10,
+              borderWidth:1,
+              width:'90%',
+              borderRadius:5,
             },
             listView: {
               position: 'absolute',
               top: 105,
             },
             separator: {
-              backgroundColor: 'white',
-              height: 1,
+              backgroundColor: 'gray',
+              height: 2,
             },
           }}
           query={{
@@ -98,12 +99,15 @@ const DestinationSearchScreen = () => {
             container: {
               position: 'absolute',
               top: 55,
-              left: 10,
+              left: 30,
               right: 10,
+              borderWidth:1,
+              width:'90%',
+              borderRadius:5
             },
             separator: {
-              backgroundColor: 'white',
-              height: 1,
+              backgroundColor: 'gray',
+              height: 2,
             },
           }}
           query={{
@@ -119,7 +123,7 @@ const DestinationSearchScreen = () => {
         <View style={styles.line} />
         <View style={styles.square} />
       </View>
-    </LinearGradient>
+    </View>
   );
 };
 

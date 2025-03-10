@@ -2,7 +2,7 @@ import { StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
   container:{
     flex:1,
-    backdropFilter: 'blur(10px)',
+  backgroundColor:'white'
  },
 backArrowContainer:{
   height:40,
@@ -13,7 +13,6 @@ backArrowContainer:{
   marginLeft:10,
 },
 textInput:{
-  backgroundColor: 'rgba(255, 255, 255, 0.2)',
   marginHorizontal:5,
   marginLeft:20,
   height:45,
@@ -25,14 +24,14 @@ row: {
     marginVertical: 17,
   },
   iconContainer: {
-    backgroundColor: 'white',
+    backgroundColor: '#007BFF',
     padding: 5,
     borderRadius: 50,
     marginRight: 15,
   },
   locationText: {
    fontSize:15,
-   color:'white'
+   color:'black'
   },
   circle: {
     width: 5,

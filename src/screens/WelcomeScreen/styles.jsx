@@ -4,8 +4,7 @@ const styles = StyleSheet.create({
 container:{
    flex:1,
    padding:20,
-   backgroundColor: 'rgba(255, 255, 255, 0.2)', // Transparent white
-   backdropFilter: 'blur(10px)',
+   backgroundColor: '#FFFFFF',
 },
 welcomeImage:{
    width:400,
@@ -14,31 +13,34 @@ welcomeImage:{
    marginHorizontal:-25,
 },
 text:{
-   marginVertical:110,
+   marginVertical:80,
    padding:10
 },
 title:{
    //fontFamily:'serif',
    fontWeight:'bold',
-   fontSize:40,
-   color:'white',
+   fontSize:50,
+   color:'#007BFF',
+   marginLeft:30
 },
 description:{
     fontWeight:'bold',
     fontSize:20,
-    color:'lightgray',
+    color:'black',
+    marginLeft:-5
+
 },
 tiImg:{
   flexDirection:'row',
   justifyContent:'center',
   alignItems:'center',
   marginHorizontal:10,
-  marginRight:80
+  marginRight:80,
   
 },
 img:{
-  fontSize:40,
-  marginBottom:10,
+  fontSize:45,
+  marginBottom:12,
   marginLeft:10,
   color:'white'
 },
@@ -56,8 +58,9 @@ loginButtonWrapper:{
    borderRadius:5,
    alignItems:'center',
    justifyContent:'center',
-   marginTop:40,
-   backgroundColor: 'rgba(245, 240, 240, 0.3)',
+   marginTop:130,
+   //backgroundColor: 'rgba(245, 240, 240, 0.3)',
+   backgroundColor:'#007BFF'
 },
 signUpButtonWrapper:{
    height:50,
@@ -65,7 +68,7 @@ signUpButtonWrapper:{
    borderRadius:5,
    alignItems:'center',
    justifyContent:'center',
-   marginTop:10,
+   marginVertical:10,
    backgroundColor: 'rgba(69, 66, 66, 0.3)',
 },
 loginText:{

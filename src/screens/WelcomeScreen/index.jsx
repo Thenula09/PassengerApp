@@ -2,7 +2,6 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
-import LinearGradient from 'react-native-linear-gradient';
 
 
 const WelcomeScreen = () => {
@@ -17,8 +16,7 @@ const WelcomeScreen = () => {
   };
 
   return ( 
-  <LinearGradient
-    colors={['#6DD5FA', '#C471ED', '#F64F59']}
+  <View
       style={styles.container}
     >
        {/*Title of app*/}
@@ -42,7 +40,7 @@ const WelcomeScreen = () => {
          <TouchableOpacity style={styles.signUpButtonWrapper} onPress={handleRegister} >
           <Text style={styles.signUpText}>Sign up</Text>
          </TouchableOpacity>
-    </LinearGradient>
+    </View>
   );
 };
 

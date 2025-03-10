@@ -81,12 +81,11 @@ const RegisterScreen = () => {
   };
 
   return (
-    <LinearGradient
-    colors={['#6DD5FA', '#C471ED', '#F64F59']}
+    <View
       style={styles.container}
     >
       <TouchableOpacity style={styles.backArrowContainer} onPress={arrowLogin}>
-        <Ionicons name={'arrow-back-outline'} color={'white'} size={30} />
+        <Ionicons name={'arrow-back-outline'} color={'black'} size={30} />
       </TouchableOpacity>
       <View style={styles.welcomeMsg}>
         <View style={styles.tiImg}>
@@ -103,7 +102,7 @@ const RegisterScreen = () => {
 
       <View style={styles.form}>
         <View style={styles.inputContainer}>
-          <Feather name={'user'} size={20} color={'white'} />
+          <Feather name={'user'} size={20} color={'gray'} />
           <TextInput
             style={styles.textInput}
             placeholder="Enter username"
@@ -114,7 +113,7 @@ const RegisterScreen = () => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Foundation name={'telephone'} size={20} color={'white'} />
+          <Foundation name={'telephone'} size={20} color={'gray'} />
           <TextInput
             style={styles.textInput}
             placeholder="Enter your mobile number"
@@ -126,7 +125,7 @@ const RegisterScreen = () => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Fontisto name={'email'} size={20} color={'white'} />
+          <Fontisto name={'email'} size={20} color={'gray'} />
           <TextInput
             style={styles.textInput}
             placeholder="Enter your email"
@@ -137,7 +136,7 @@ const RegisterScreen = () => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Fontisto name={'locked'} size={20} color={'white'} />
+          <Fontisto name={'locked'} size={20} color={'gray'} />
           <TextInput
             style={styles.textInput}
             placeholder="Enter password"
@@ -149,7 +148,7 @@ const RegisterScreen = () => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Fontisto name={'locked'} size={20} color={'white'} />
+          <Fontisto name={'locked'} size={20} color={'gray'} />
           <TextInput
             style={styles.textInput}
             placeholder="Confirm password"
@@ -182,7 +181,7 @@ const RegisterScreen = () => {
         </View>
       </View>
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 };
 
