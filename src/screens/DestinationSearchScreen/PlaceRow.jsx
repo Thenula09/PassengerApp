@@ -11,13 +11,13 @@ const PlaceRow = ({ data }) => {
       <View
         style={[
           styles.iconContainer,
-          isMataraBusStand && { backgroundColor: 'black' },
+          isMataraBusStand && { backgroundColor: '#007BFF' },
         ]}
       >
         <Entypo
           name={isMataraBusStand ? 'home' : 'location-pin'}
           size={20}
-          color={isMataraBusStand ? 'white' : 'black'} // Icon color
+          color={isMataraBusStand ? 'white' : 'white'} // Icon color
         />
       </View>
       <Text style={styles.locationText}>{data.description || data.vicinity}</Text>

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex:1,
-    backdropFilter: 'blur(10px)',
+    backgroundColor:'white'
   },
   homeMap: {
     height: 530,
@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   message: {
-    backgroundColor:'rgba(255, 255, 255, 0.2)',
+    backgroundColor:'black',
     borderRadius: 10,
     marginTop: 5,
     padding: 15,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
 
   // Search Box Style
   inputBox: {
-    backgroundColor: 'rgba(245, 240, 240, 0.3)',
+    backgroundColor: '#007BFF',
     marginHorizontal: 6,
     marginTop:5,
     padding: 10,
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
     borderTopWidth: 1,
-    borderTopColor: 'white',
+    borderTopColor: 'gray',
     marginTop:20,
   },
   navButton: {
@@ -85,7 +85,8 @@ const styles = StyleSheet.create({
   },
   navText: {
     fontSize: 12,
-    color: 'white',
+    color: 'black',
+    fontWeight:'bold',
     marginTop: 5,
   },
 });

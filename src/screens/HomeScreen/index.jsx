@@ -6,7 +6,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import LinearGradient from 'react-native-linear-gradient';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -28,9 +27,7 @@ const HomeScreen = () => {
   };
 
   return (
-    <LinearGradient
-    colors={['#6DD5FA', '#C471ED', '#F64F59']}
-      style={styles.container}
+    <View style={styles.container}
     >
       {/* Map Section */}
       <View style={styles.homeMap}>
@@ -75,21 +72,21 @@ const HomeScreen = () => {
       {/* Navigation Buttons */}
       <View style={styles.bottomNavigation}>
         <TouchableOpacity style={styles.navButton} onPress={goToUserProfile}>
-          <Entypo name="user" size={20} color="white" />
+          <Entypo name="user" size={20} color="gray" />
           <Text style={styles.navText}>Profile</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navButton} onPress={goToBooking}>
-          <AntDesign name="calendar" size={20} color="white" />
+          <AntDesign name="calendar" size={20} color="gray" />
           <Text style={styles.navText}>Booking</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navButton} onPress={goToBusDetails}>
-          <MaterialIcons name="directions-bus" size={20} color="white" />
+          <MaterialIcons name="directions-bus" size={20} color="gray" />
           <Text style={styles.navText}>Bus Details</Text>
         </TouchableOpacity>
       </View>
-    </LinearGradient>
+    </View>
   );
 };
 

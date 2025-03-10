@@ -1,14 +1,12 @@
 import {View, TouchableOpacity, TextInput, Text, Image, ScrollView} from 'react-native';
 import React, { useState } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Feather from 'react-native-vector-icons/Feather';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../../FirebaseConfig';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import styles from './styles';
 import Toast from 'react-native-toast-message';
-import LinearGradient from 'react-native-linear-gradient';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -80,13 +78,12 @@ const LoginScreen = () => {
   };
 
   return (
-    <LinearGradient
-    colors={['#6DD5FA', '#C471ED', '#F64F59']}
+    <View
       style={styles.container}
     >
       {/* Back Arrow */}
       <TouchableOpacity style={styles.backArrowContainer} onPress={arrowLogin}>
-        <Ionicons name={'arrow-back-outline'} color={'white'} size={30} />
+        <Ionicons name={'arrow-back-outline'} color={'black'} size={30} />
       </TouchableOpacity>
 
       {/* Welcome Message */}
@@ -104,7 +101,7 @@ const LoginScreen = () => {
         
         {/* Email Input */}
         <View style={styles.inputContainer}>
-          <Feather name={'user'} size={20} color={'white'} />
+          <Fontisto name={'email'} size={20} color={'gray'} />
           <TextInput
             style={styles.textInput}
             placeholder="Enter your email"
@@ -116,7 +113,7 @@ const LoginScreen = () => {
 
         {/* Password Input */}
         <View style={styles.inputContainer}>
-          <Fontisto name={'locked'} size={20} color={'white'} />
+          <Fontisto name={'locked'} size={20} color={'gray'} />
           <TextInput
             style={styles.textInput}
             placeholder="Enter your password"
@@ -132,7 +129,7 @@ const LoginScreen = () => {
             <Ionicons
               name={passwordVisible ? 'eye' : 'eye-off'}
               size={20}
-              color="white"
+              color="gray"
             />
           </TouchableOpacity>
         </View>
@@ -160,7 +157,7 @@ const LoginScreen = () => {
       </ScrollView>
 
       <Toast />
-    </LinearGradient>
+    </View>
   );
 };
 

@@ -10,7 +10,7 @@ const DoneButtonComponent = ({...rest}) =>{
     <TouchableOpacity {...rest} 
     style={{marginHorizontal:20}}
     >
-      <Text style={{color:'white',fontSize:16}}>Done</Text>
+      <Text style={{color:'black',fontSize:16}}>Done</Text>
     </TouchableOpacity>
   )
 }
@@ -37,32 +37,32 @@ const Start = () => {
       fontSize: 24, 
       fontWeight: 'bold',
       textAlign: 'center',
-      color: '#fff', // 
+      color: '#007BFF', // 
   }}
   subTitleStyles={{
       fontSize: 16, 
       textAlign: 'center',
-      color: 'lightgray', 
+      color: 'black', 
       paddingHorizontal: 20,
   }}
 
     pages={[
       {
-        backgroundColor: '#6DD5FA',
+        backgroundColor: 'white',
         image: <Image source={require('../../assets/image1.png')} style={styles.image1}/>,
         title: 'Track your bus in real-time',
         subtitle: 'See your bus moving live on the map, track its exact location, and check for any delays all in real-time.',
       },
       {
-        backgroundColor: '#C471ED',
+        backgroundColor: 'white',
         image: <Image source={require('../../assets/image2.png')} style={styles.image2}/>,
         title: 'Reserve seats and make online payments',
         subtitle: 'Easily reserve your seats and confirm your booking with secure online payments. With trusted payment gateways, you can book your seat with confidence and peace of mind.'
       },
       {
-        backgroundColor: '#F64F59',
+        backgroundColor: 'white',
         image: <Image source={require('../../assets/image3.png')} style={styles.image3}/>,
-        title: 'Plan your journey with ease',
+        title: 'Plan your journey with easy',
         subtitle: 'Effortlessly plan your journey ahead of time. Check bus schedules, seat availability, and routes — all in one place, making your travel planning simple and stress-free.',
       },
     ]}

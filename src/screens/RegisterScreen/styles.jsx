@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
 container:{
     flex:1,
     padding:10,
-    backdropFilter: 'blur(10px)',
+   backgroundColor:'white'
 },
 backArrowContainer:{
     height:40,
@@ -21,13 +21,13 @@ welcomeMsg:{
 welcomeText:{
     fontSize:40,
     fontWeight:'bold',
-    color:'white',
+    color:'#007BFF',
     //fontFamily:'serif',
     paddingTop:50,
 },
 p:{
     fontSize:20,
-    color:'lightgray',
+    color:'black',
     fontWeight:'bold'
 },
 tiImg:{
@@ -48,7 +48,7 @@ form:{
 },
 inputContainer:{
     borderWidth:1,
-    borderColor:'white',
+    borderColor:'black',
     borderRadius:5,
     height:50,
     flexDirection:'row',
@@ -68,7 +68,7 @@ signUpButton:{
     alignItems:'center',
     justifyContent:'center',
     marginTop:10,
-    backgroundColor: 'rgba(245, 240, 240, 0.3)',
+    backgroundColor: '#007BFF',
 },
 buttonSignUpText:{
     fontSize:20,
@@ -110,12 +110,12 @@ bottomText:{
 },
 alreadyAccountText:{
     fontSize:18,
-    color:'white'
+    color:'black'
 },
 bottomLogin:{
     fontSize:20,
     fontWeight:'bold',
-    color:'white',
+    color:'gray',
     textDecorationLine:'underline',
 },
 });
