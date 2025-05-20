@@ -62,11 +62,11 @@ const HomeScreen = () => {
       {/* Search Box */}
       <Pressable style={styles.inputBox} onPress={gotoSearch}>
         <Text style={styles.inputText}>Where To?</Text>
-        {/*<View style={styles.timeContainer}>
+        <View style={styles.timeContainer}>
           <AntDesign name={'clockcircle'} size={16} color={'#535353'} />
           <Text>Now</Text>
           <MaterialIcons name={'keyboard-arrow-down'} size={16} />
-        </View>*/}
+        </View>
       </Pressable>
 
       {/* Navigation Buttons */}
