@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import PlaceRow from './PlaceRow';
+import LinearGradient from 'react-native-linear-gradient';
 
 const homePlace = {
   description: 'Matara Bus Stand',
@@ -36,6 +37,10 @@ const DestinationSearchScreen = () => {
   };
 
   return (
+    <LinearGradient
+      colors={['white', 'white','green']}
+      style={styles.container}
+    >
     <View
       style={styles.container}
     >
@@ -47,7 +52,7 @@ const DestinationSearchScreen = () => {
       <View style={styles.container}>
         {/* Origin input */}
         <GooglePlacesAutocomplete
-          placeholder="Where from"
+          placeholder="Where from ?"
           onPress={(data, details = null) => {
             setOriginPlace({ data, details });
           }}
@@ -77,7 +82,7 @@ const DestinationSearchScreen = () => {
             },
           }}
           query={{
-            key: 'AIzaSyA55BcfnDZ54cEaQyHMRllgX4Fo-niDUN8',
+            key: 'AIzaSyC_yqOK5t7tfvvMNJ7KGdqKnm9Hz9oQ3jA',
             language: 'en',
           }}
           renderRow={(data) => <PlaceRow data={data} />}
@@ -87,7 +92,7 @@ const DestinationSearchScreen = () => {
 
         {/* Destination input */}
         <GooglePlacesAutocomplete
-          placeholder="Where to?"
+          placeholder="Where to ?"
           onPress={(data, details = null) => {
             setDestinationPlace({ data, details });
           }}
@@ -111,7 +116,7 @@ const DestinationSearchScreen = () => {
             },
           }}
           query={{
-            key: 'AIzaSyA55BcfnDZ54cEaQyHMRllgX4Fo-niDUN8',
+            key: 'AIzaSyC_yqOK5t7tfvvMNJ7KGdqKnm9Hz9oQ3jA',
             language: 'en',
           }}
           renderRow={(data) => <PlaceRow data={data} />}
@@ -124,6 +129,7 @@ const DestinationSearchScreen = () => {
         <View style={styles.square} />
       </View>
     </View>
+    </LinearGradient>
   );
 };
 

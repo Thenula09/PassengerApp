@@ -81,6 +81,10 @@ const RegisterScreen = () => {
   };
 
   return (
+    <LinearGradient
+      colors={['white', 'white','green']}
+      style={styles.container}
+    >
     <View
       style={styles.container}
     >
@@ -106,7 +110,7 @@ const RegisterScreen = () => {
           <TextInput
             style={styles.textInput}
             placeholder="Enter username"
-            placeholderTextColor={'lightgray'}
+            placeholderTextColor={'gray'}
             value={username}
             onChangeText={setUsername}
           />
@@ -117,7 +121,7 @@ const RegisterScreen = () => {
           <TextInput
             style={styles.textInput}
             placeholder="Enter your mobile number"
-            placeholderTextColor={'lightgray'}
+            placeholderTextColor={'gray'}
             value={mobile}
             onChangeText={setMobile}
             keyboardType={'number-pad'}
@@ -129,7 +133,7 @@ const RegisterScreen = () => {
           <TextInput
             style={styles.textInput}
             placeholder="Enter your email"
-            placeholderTextColor={'lightgray'}
+            placeholderTextColor={'gray'}
             value={email}
             onChangeText={setEmail}
           />
@@ -140,7 +144,7 @@ const RegisterScreen = () => {
           <TextInput
             style={styles.textInput}
             placeholder="Enter password"
-            placeholderTextColor={'lightgray'}
+            placeholderTextColor={'gray'}
             value={password}
             onChangeText={setPassword}
             secureTextEntry={true}
@@ -152,7 +156,7 @@ const RegisterScreen = () => {
           <TextInput
             style={styles.textInput}
             placeholder="Confirm password"
-            placeholderTextColor={'lightgray'}
+            placeholderTextColor={'gray'}
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             secureTextEntry={true}
@@ -182,6 +186,7 @@ const RegisterScreen = () => {
       </View>
       </ScrollView>
     </View>
+    </LinearGradient>
   );
 };
 

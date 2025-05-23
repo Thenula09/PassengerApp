@@ -8,6 +8,8 @@ import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/aut
 import styles from './styles';
 import Toast from 'react-native-toast-message';
 
+import LinearGradient from 'react-native-linear-gradient';
+
 const LoginScreen = () => {
   const navigation = useNavigation();
 
@@ -78,8 +80,12 @@ const LoginScreen = () => {
   };
 
   return (
+    <LinearGradient
+      colors={['white', 'white', 'green']}
+      style={styles.container}>
+
     <View
-      style={styles.container}
+      
     >
       {/* Back Arrow */}
       <TouchableOpacity style={styles.backArrowContainer} onPress={arrowLogin}>
@@ -100,12 +106,13 @@ const LoginScreen = () => {
       >
         
         {/* Email Input */}
+        <View style={styles.textInputContainer}>
         <View style={styles.inputContainer}>
           <Fontisto name={'email'} size={20} color={'gray'} />
           <TextInput
             style={styles.textInput}
             placeholder="Enter your email"
-            placeholderTextColor={'whitegray'}
+            placeholderTextColor={'gray'}
             value={email}
             onChangeText={setEmail}
           />
@@ -117,7 +124,7 @@ const LoginScreen = () => {
           <TextInput
             style={styles.textInput}
             placeholder="Enter your password"
-            placeholderTextColor={'whitegray'}
+            placeholderTextColor={'gray'}
             secureTextEntry={!passwordVisible}
             value={password}
             onChangeText={setPassword}
@@ -132,6 +139,7 @@ const LoginScreen = () => {
               color="gray"
             />
           </TouchableOpacity>
+        </View>
         </View>
 
         {/* Forgot Password */}
@@ -158,6 +166,7 @@ const LoginScreen = () => {
 
       <Toast />
     </View>
+      </LinearGradient>
   );
 };
 

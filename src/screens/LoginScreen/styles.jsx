@@ -21,12 +21,12 @@ welcomeMsg:{
 welcomeText:{
     fontSize:40,
     fontWeight:'bold',
-    color:'#007BFF',
+    color:'green',
     //fontFamily:'serif',
 },
 p:{
     fontSize:20,
-    color:'black',
+    color:'gray',
     fontWeight:'bold'
 },
 form:{
@@ -48,6 +48,9 @@ textInput:{
     paddingHorizontal:20,
     color:'black',
 },
+textInputContainer:{
+marginTop:90
+},
 forgotPasswordText:{
     textAlign:'right',
     color:'black',
@@ -60,8 +63,8 @@ loginButton:{
     borderRadius:5,
     alignItems:'center',
     justifyContent:'center',
-    marginTop:10,
-    backgroundColor: '#007BFF',
+    marginTop:100,
+    backgroundColor: 'black',
     borderColor:'white',
    
 },
@@ -101,7 +104,7 @@ bottomText:{
     alignItems:'center',
     flexDirection:'row',
     gap:10,
-    marginVertical:20,
+    marginVertical:30,
 },
 doNotAccountText:{
     fontSize:18,
@@ -110,7 +113,7 @@ doNotAccountText:{
 bottomSignUp:{
     fontSize:20,
     fontWeight:'bold',
-    color:'gray',
+    color:'black',
     textDecorationLine:'underline',
 },
 });
