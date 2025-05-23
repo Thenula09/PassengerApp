@@ -3,7 +3,7 @@ import { StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
 container:{
     flex:1,
-    padding:10,
+    padding:8,
    
 },
 backArrowContainer:{
@@ -16,19 +16,22 @@ welcomeMsg:{
     justifyContent:'center',
     gap:2,
     margin:10,
-    paddingTop:30,
+    paddingTop:-10,
 },
 welcomeText:{
-    fontSize:40,
+    fontSize:30,
     fontWeight:'bold',
-    color:'black',
+    color:'green',
     //fontFamily:'serif',
     paddingTop:50,
+    marginLeft:5,
 },
 p:{
     fontSize:20,
     color:'black',
-    fontWeight:'bold'
+    fontWeight:'bold',
+    marginLeft:5,
+    marginTop:-10,
 },
 tiImg:{
     flexDirection:'row',

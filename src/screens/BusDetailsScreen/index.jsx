@@ -4,6 +4,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 import RouteMap from '../../components/RouteMap';
 import styles from './styles';
+import LinearGradient from 'react-native-linear-gradient';
 
 const BusDetailsScreen = () => {
   const navigation = useNavigation();
@@ -70,6 +71,10 @@ const BusDetailsScreen = () => {
   };
 
   return (
+     <LinearGradient
+      colors={['white', 'white','white','green']}
+      style={styles.container}
+    >
     <View style={{ display: 'flex', justifyContent: 'space-between', flex: 1 }}>
       {/* Map Section */}
       <View style={{ height: Dimensions.get('window').height - 400 }}>
@@ -93,11 +98,11 @@ const BusDetailsScreen = () => {
                 padding: 10,
                 marginHorizontal: 10,
                 marginVertical: 5,
-                backgroundColor: '#f2f2f2',
+                backgroundColor: 'rgba(69, 66, 66, 0.57)',
                 borderRadius: 5,
               }}
             >
-              <Text style={{ flex: 1,  fontSize:20}}>
+              <Text style={{ flex: 1,  fontSize:20, fontWeight:'bold', color:'black' }}>
                 {item.busNumber}  {/* Displaying bus number and busId */}
               </Text>
               <TouchableOpacity
@@ -110,7 +115,7 @@ const BusDetailsScreen = () => {
                 }}
                 onPress={() => gotoLayout(item)}  // Trigger the bus layout navigation
               >
-                <Text style={{ color: 'white',  }}>Booking</Text>
+                <Text style={{ color: 'white',fontWeight:'bold'  }}>Booking</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -121,7 +126,7 @@ const BusDetailsScreen = () => {
                 }}
                 onPress={() => goToMap(item)} // Pass bus location and driver location to map
               >
-                <Text style={{ color: 'white' }}>Map</Text>
+                <Text style={{ color: 'white', fontWeight:'bold' }}>Track</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -132,6 +137,7 @@ const BusDetailsScreen = () => {
         </Text>
       )}
     </View>
+    </LinearGradient>
   );
 };
 

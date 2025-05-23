@@ -4,6 +4,9 @@ const styles = StyleSheet.create({
 map: {
      ...StyleSheet.absoluteFillObject,
 },
+container:{
+     flex:1,
+},
 backArrowContainer:{
      height:40,
      width:40,
@@ -18,6 +21,8 @@ availableBuses:{
      fontWeight:'bold',
      marginTop:10,
      textDecorationLine:'underline',
+     color:'green',
+     marginBottom:10,
 },
 confirmButton:{
      borderWidth:1,
