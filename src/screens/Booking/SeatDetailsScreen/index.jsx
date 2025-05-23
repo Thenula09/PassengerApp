@@ -4,6 +4,7 @@ import styles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
+import LinearGradient from 'react-native-linear-gradient';
 
 const SeatDetailsScreen = () => {
   const navigation = useNavigation();
@@ -67,6 +68,10 @@ const SeatDetailsScreen = () => {
   };
 
   return (
+     <LinearGradient
+      colors={['white', 'white','green']}
+      style={styles.container}
+    >
     <ScrollView style={styles.container}>
       <View style={styles.head}>
         <TouchableOpacity style={styles.backArrowContainer} onPress={() => navigation.goBack()}>
@@ -144,6 +149,7 @@ const SeatDetailsScreen = () => {
         </TouchableOpacity>
       </View>
     </ScrollView>
+    </LinearGradient>
   );
 };
 

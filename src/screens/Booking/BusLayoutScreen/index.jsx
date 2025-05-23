@@ -4,6 +4,7 @@ import styles from './styles'; // Ensure you have the correct styles
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
+import LinearGradient from 'react-native-linear-gradient';
 
 const BusLayoutScreen = () => {
   const navigation = useNavigation();
@@ -117,17 +118,24 @@ const BusLayoutScreen = () => {
   ];
 
   return (
+    <LinearGradient
+      colors={['white', 'white','green']}
+      style={styles.container}
+    >
     <View style={styles.container}>
       <View style={styles.head}>
         <TouchableOpacity style={styles.backArrowContainer} onPress={() => navigation.goBack()}>
           <Ionicons name={'arrow-back-outline'} color={'black'} size={30} />
         </TouchableOpacity>
-        <Text style={styles.title}>Select Your Seat</Text>
+        <Text style={styles.title}>Select your seat</Text>
       </View>
 
       <View style={styles.busInfoContainer}>
         {busId ? (
-          <Text style={styles.busIdText}>Bus ID: {busId}</Text>
+         <Text style={[styles.busIdText, { display: 'none' }]}>
+  Bus ID: {busId}
+</Text>
+
         ) : (
           <Text style={styles.busIdText}>Bus ID not available</Text>
         )}
@@ -154,6 +162,7 @@ const BusLayoutScreen = () => {
         <Text style={styles.continueText}>Confirm Selection</Text>
       </TouchableOpacity>
     </View>
+    </LinearGradient>
   );
 };
 

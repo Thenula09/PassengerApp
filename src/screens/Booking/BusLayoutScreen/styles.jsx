@@ -4,26 +4,29 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
   },
   head: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 25,
   },
   backArrowContainer: {
-    marginRight: 10,
+    marginRight: 20,
+    mariginLeft: 10,
   },
   title: {
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: 'bold',
-    marginHorizontal:50,
+    marginHorizontal:15,
+    color: 'green',
   },
   seatLayout: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 50,
+    paddingVertical: 20,
+    paddingVertical: 20,
   },
   row: {
     flexDirection: 'row',
@@ -37,7 +40,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: 'black',
   },
   availableSeat: {
     backgroundColor: 'white',
@@ -61,7 +64,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginTop: 70,
     marginBottom: -20,
-    marginLeft: 90,
+    marginLeft: 80,
   },
   box1: {
     width: 20,

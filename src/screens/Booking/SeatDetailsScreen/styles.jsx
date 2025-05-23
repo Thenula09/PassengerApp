@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
     marginVertical: 10,
   },
   backArrowContainer: {
@@ -29,8 +28,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center',
-    fontFamily: 'serif',
-    marginRight: 130,
+    marginRight: 150,
+    color: 'green',
   },
   text: {
     marginVertical: 7,
@@ -38,16 +37,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     fontSize: 17,
   },
-  button: {
+  payButton: {
     borderWidth: 3,
     borderRadius: 5, // Reduced border radius to 5
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10,
+    marginTop: 30,
     backgroundColor: 'black', // Black button background
   },
-  buttonText: {
+  pay: {
     fontSize: 20,
     fontWeight: 'bold',
     color: 'white',

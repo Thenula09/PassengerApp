@@ -16,17 +16,17 @@ welcomeMsg:{
     justifyContent:'center',
     gap:2,
     margin:10,
-    paddingTop:80,
+    paddingTop:70,
 },
 welcomeText:{
-    fontSize:40,
+    fontSize:30,
     fontWeight:'bold',
     color:'green',
     //fontFamily:'serif',
 },
 p:{
     fontSize:20,
-    color:'gray',
+    color:'black',
     fontWeight:'bold'
 },
 form:{
@@ -63,7 +63,7 @@ loginButton:{
     borderRadius:5,
     alignItems:'center',
     justifyContent:'center',
-    marginTop:100,
+    marginTop:135,
     backgroundColor: 'black',
     borderColor:'white',
    

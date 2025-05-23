@@ -14,20 +14,21 @@ welcomeImage:{
 },
 text:{
    marginVertical:80,
-   padding:10
+   padding:10,   
 },
 title:{
    //fontFamily:'serif',
    fontWeight:'bold',
-   fontSize:50,
-   color:'black',
-   marginLeft:30
+   fontSize:30,
+   color:'green',
+   marginLeft:-10
 },
 description:{
     fontWeight:'bold',
     fontSize:20,
     color:'black',
-    marginLeft:-5
+    marginLeft:-5,
+    marginTop:-10,
 
 },
 tiImg:{
@@ -58,7 +59,7 @@ loginButtonWrapper:{
    borderRadius:5,
    alignItems:'center',
    justifyContent:'center',
-   marginTop:75,
+   marginTop:80,
    //backgroundColor: 'rgba(245, 240, 240, 0.3)',
    backgroundColor:'black'
 },
