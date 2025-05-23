@@ -6,6 +6,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -27,6 +28,10 @@ const HomeScreen = () => {
   };
 
   return (
+     <LinearGradient
+      colors={['white', 'white','white','green']}
+      style={styles.container}
+    >
     <View style={styles.container}
     >
       {/* Map Section */}
@@ -48,8 +53,8 @@ const HomeScreen = () => {
       <View style={styles.message}>
         <Text style={styles.title}>Travel with Highway bus</Text>
         <Text style={styles.field}>
-          Help flatten the curve. If you must travel, please exercise caution for your safety and the safety of our
-          community.
+         Travel smart with our highway buses. Book your seat in advance, arrive on time, and enjoy a safe, comfortable journey.
+          Your safety and comfort are our top priority.
         </Text>
         <TouchableOpacity>
           <View style={styles.learnContainer}>
@@ -62,15 +67,15 @@ const HomeScreen = () => {
       {/* Search Box */}
       <Pressable style={styles.inputBox} onPress={gotoSearch}>
         <Text style={styles.inputText}>Where To?</Text>
-        <View style={styles.timeContainer}>
+        {/*<View style={styles.timeContainer}>
           <AntDesign name={'clockcircle'} size={16} color={'#535353'} />
           <Text>Now</Text>
           <MaterialIcons name={'keyboard-arrow-down'} size={16} />
-        </View>
+        </View>*/}
       </Pressable>
 
       {/* Navigation Buttons */}
-      <View style={styles.bottomNavigation}>
+     {/* <View style={styles.bottomNavigation}>
         <TouchableOpacity style={styles.navButton} onPress={goToUserProfile}>
           <Entypo name="user" size={20} color="gray" />
           <Text style={styles.navText}>Profile</Text>
@@ -85,8 +90,9 @@ const HomeScreen = () => {
           <MaterialIcons name="directions-bus" size={20} color="gray" />
           <Text style={styles.navText}>Bus Details</Text>
         </TouchableOpacity>
-      </View>
+      </View>*/}
     </View>
+    </LinearGradient>
   );
 };
 

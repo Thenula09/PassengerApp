@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
 container:{
    flex:1,
    padding:20,
-   backgroundColor: '#FFFFFF',
+  
 },
 welcomeImage:{
    width:400,
@@ -20,7 +20,7 @@ title:{
    //fontFamily:'serif',
    fontWeight:'bold',
    fontSize:50,
-   color:'#007BFF',
+   color:'black',
    marginLeft:30
 },
 description:{
@@ -58,9 +58,9 @@ loginButtonWrapper:{
    borderRadius:5,
    alignItems:'center',
    justifyContent:'center',
-   marginTop:130,
+   marginTop:75,
    //backgroundColor: 'rgba(245, 240, 240, 0.3)',
-   backgroundColor:'#007BFF'
+   backgroundColor:'black'
 },
 signUpButtonWrapper:{
    height:50,

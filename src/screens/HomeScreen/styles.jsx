@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex:1,
-    backgroundColor:'white'
   },
   homeMap: {
     height: 530,
@@ -45,7 +44,7 @@ const styles = StyleSheet.create({
 
   // Search Box Style
   inputBox: {
-    backgroundColor: '#007BFF',
+    backgroundColor: 'rgba(26, 12, 12, 0.51)',
     marginHorizontal: 6,
     marginTop:5,
     padding: 10,

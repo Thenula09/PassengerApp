@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
 container:{
     flex:1,
     padding:10,
-   backgroundColor:'white'
+   
 },
 backArrowContainer:{
     height:40,
@@ -21,7 +21,7 @@ welcomeMsg:{
 welcomeText:{
     fontSize:40,
     fontWeight:'bold',
-    color:'#007BFF',
+    color:'black',
     //fontFamily:'serif',
     paddingTop:50,
 },
@@ -68,7 +68,7 @@ signUpButton:{
     alignItems:'center',
     justifyContent:'center',
     marginTop:10,
-    backgroundColor: '#007BFF',
+    backgroundColor: 'black',
 },
 buttonSignUpText:{
     fontSize:20,
@@ -115,7 +115,7 @@ alreadyAccountText:{
 bottomLogin:{
     fontSize:20,
     fontWeight:'bold',
-    color:'gray',
+    color:'black',
     textDecorationLine:'underline',
 },
 });

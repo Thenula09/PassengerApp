@@ -2,7 +2,6 @@ import { StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
   container:{
     flex:1,
-  backgroundColor:'white'
  },
 backArrowContainer:{
   height:40,
@@ -24,7 +23,7 @@ row: {
     marginVertical: 17,
   },
   iconContainer: {
-    backgroundColor: '#007BFF',
+    backgroundColor: 'black',
     padding: 5,
     borderRadius: 50,
     marginRight: 15,
