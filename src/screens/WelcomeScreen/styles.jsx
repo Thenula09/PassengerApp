@@ -26,7 +26,7 @@ title:{
 description:{
     fontWeight:'bold',
     fontSize:20,
-    color:'black',
+    color:'green',
     marginLeft:-5,
     marginTop:-10,
 
@@ -82,5 +82,11 @@ signUpText:{
     fontWeight:'bold',
     color:'white',
 },
+logoImage:{
+   width: 180,
+   height: 150,
+   marginBottom:-140,
+   marginLeft: -30
+}
 });
 export default styles;

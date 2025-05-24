@@ -21,11 +21,14 @@ const WelcomeScreen = () => {
       style={styles.container}
     >
       {/*Title of app*/}
+      <View>
+        <Image source={require('../../assets/logo2.png')} style={styles.logoImage} />
+      </View>
       <View style={styles.text}>
-        <View style={styles.tiImg}>
+        {/*<View style={styles.tiImg}>
           <Text style={styles.title}>Get Started</Text>
           <Text style={styles.img}>🚌.....</Text>
-        </View>
+        </View>*/}
         <Text style={styles.description}>Begin your journey now</Text>
       </View>
 
