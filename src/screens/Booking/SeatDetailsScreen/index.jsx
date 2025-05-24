@@ -107,7 +107,7 @@ const SeatDetailsScreen = () => {
               keyboardType="number-pad"
               value={cardNumber}
               onChangeText={setCardNumber}
-              maxLength={19}
+              maxLength={16}
             />
           </View>
 

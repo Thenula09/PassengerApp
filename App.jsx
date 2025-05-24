@@ -19,6 +19,7 @@ import BusMapScreen from './src/screens/BusMapScreen/BusMapScreen';
 import StartingScreen from './src/screens/StartingScreen';
 import SplashScreen from 'react-native-splash-screen';
 import SuccessScreen from './src/screens/Booking/SuccessScreen/SuccessScreen';
+import BookingRecipt from './src/screens/BookingReceipt/BookingReceipt';
 
 
 const Stack = createNativeStackNavigator();
@@ -70,6 +71,8 @@ const App = () => {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Profile" component={UserProfileScreen} />
+      <Stack.Screen name="Receipt" component={BookingRecipt} />
       <Stack.Screen name="Destination Search" component={DestinationSearchScreen} />
       <Stack.Screen name="Bus Details" component={BusDetailsScreen} />
       <Stack.Screen name="Bus Layout" component={BusLayoutScreen} />
