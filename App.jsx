@@ -18,6 +18,7 @@ import 'react-native-reanimated';
 import BusMapScreen from './src/screens/BusMapScreen/BusMapScreen';
 import StartingScreen from './src/screens/StartingScreen';
 import SplashScreen from 'react-native-splash-screen';
+import SuccessScreen from './src/screens/Booking/SuccessScreen/SuccessScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -76,6 +77,8 @@ const App = () => {
       <Stack.Screen name="BusMapScreen" component={BusMapScreen} />
       <Stack.Screen name="BusLayoutScreen" component={BusLayoutScreen} />
       <Stack.Screen name="SeatDetailsScreen" component={SeatDetailsScreen} />
+      <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
+
 
     </Stack.Navigator>
     </NavigationContainer>
