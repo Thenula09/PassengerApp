@@ -2,7 +2,6 @@ import { StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
 container:{
     flex:1,
-    backgroundColor:'white',
     padding:10,
     },
 header:{
@@ -11,18 +10,10 @@ header:{
      marginVertical:10,
      paddingHorizontal:10,
 },
-backArrowContainer:{
-    backgroundColor:'lightgray',
-    height:40,
-    width:40,
-    borderRadius:25,
-    justifyContent:'center',
-    alignItems:'center',
-},
 profileText:{
      fontSize:30,
      fontWeight:'bold',
-     fontFamily:'serif',
+    color:'green',
      marginLeft:80,
 },
 imageContainer:{
@@ -44,9 +35,9 @@ editIcon:{
     marginLeft:100,
 },
 inputContainer:{
-    borderWidth:1,
+     borderWidth:1,
     borderColor:'black',
-    borderRadius:25,
+    borderRadius:5,
     height:50,
     flexDirection:'row',
     paddingHorizontal:20,
@@ -55,9 +46,9 @@ inputContainer:{
 },
 textInput:{
     flex:1,
-    fontSize:16,
+    fontSize:20,
     paddingHorizontal:20,
-    color:'gray',
+    color:'black',
 },
 form:{
     marginBottom:10,
@@ -70,24 +61,17 @@ textLabel:{
     paddingVertical:5,
 },
 loginButton:{
-    borderWidth:1,
-    height:50,
-    borderRadius:25,
+     height:50,
+    borderRadius:5,
     alignItems:'center',
     justifyContent:'center',
     marginTop:10,
-    backgroundColor:'black',
-    width:150,
+    backgroundColor: 'black',
 },
 buttonLoginText:{
     fontSize:20,
     fontWeight:'bold',
     color:'white',
-},
-buttonContainer:{
-    flexDirection:'row',
-    justifyContent:'space-between',
-    marginHorizontal:5,
 },
 });
 

@@ -7,6 +7,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
 import Foundation from 'react-native-vector-icons/Foundation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import LinearGradient from 'react-native-linear-gradient';
 
 const UserProfileScreen = () => {
   const [secureEntry, setSecureEntry] = useState(true);
@@ -38,6 +39,10 @@ const UserProfileScreen = () => {
 
 
   return (
+     <LinearGradient
+      colors={['white', 'white','green']}
+      style={styles.container}
+    >
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backArrowContainer}>
@@ -128,6 +133,7 @@ const UserProfileScreen = () => {
         </TouchableOpacity>
       </View>
     </ScrollView>
+    </LinearGradient>
   );
 };
 
