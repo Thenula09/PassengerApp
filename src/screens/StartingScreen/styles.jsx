@@ -1,27 +1,49 @@
-import { StyleSheet} from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        padding:20,
-        backgroundColor:'white'
+    container: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: 'white'
     },
-        
-    image1:{
-        width:350,
-        height:350,
+    
+    imageContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 40,
+        marginBottom: 20,
+    },
+    
+    imageShadow: {
+        position: 'absolute',
+        width: width * 0.8,
+        height: 20,
+        backgroundColor: 'rgba(0,0,0,0.1)',
+        borderRadius: 100,
+        bottom: -10,
+        transform: [{ scaleX: 1.2 }],
+    },
+    
+    image1: {
+        width: width * 0.85,
+        height: height * 0.4,
         resizeMode: 'contain',
     },
-    image2:{
-        width:350,
-        height:350,
+    
+    image2: {
+        width: width * 0.85,
+        height: height * 0.4,
         resizeMode: 'contain',
     },
-    image3:{
-        width:350,
-        height:350,
+    
+    image3: {
+        width: width * 0.85,
+        height: height * 0.4,
         resizeMode: 'contain',
     },
 });
+
 export default styles;
 
