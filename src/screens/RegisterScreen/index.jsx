@@ -33,6 +33,10 @@ const RegisterScreen = () => {
 
 
   const handleSignUp = () => {
+    console.log('Sign Up button clicked');
+    console.log('Username:', username);
+    console.log('Mobile:', mobile);
+    console.log('Email:', email);
 
     if (!username || !mobile || !email || !password || !confirmPassword) {
       Alert.alert('Error', 'All fields are required!');
@@ -43,6 +47,7 @@ const RegisterScreen = () => {
       return;
     }
 
+    console.log('Creating user with email:', email);
     // Create a new user
     auth()
       .createUserWithEmailAndPassword(email, password)
@@ -60,14 +65,22 @@ const RegisterScreen = () => {
           .set(newPassenger);
       })
       .then(() => {
+        console.log('Registration successful! Showing alert...');
         Alert.alert('Success', 'Registration Successful!', [
           {
             text: 'OK',
-            onPress: () => navigation.navigate('Login'),
+            onPress: () => {
+              console.log('Navigating to Login screen...');
+              navigation.navigate('Login');
+            },
           },
         ]);
+        console.log('Alert displayed');
       })
       .catch((error) => {
+        console.log('Error code:', error.code);
+        console.log('Error message:', error.message);
+        
         if (error.code === 'auth/email-already-in-use') {
           Alert.alert('Error', 'This email address is already in use!');
         } else if (error.code === 'auth/invalid-email') {
