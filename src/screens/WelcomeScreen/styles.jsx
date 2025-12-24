@@ -1,92 +1,193 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-container:{
-   flex:1,
-   padding:20,
-  
-},
-welcomeImage:{
-   width:400,
-   height:200,
-   marginVertical:20,
-   marginHorizontal:-25,
-},
-text:{
-   marginVertical:80,
-   padding:10,   
-},
-title:{
-   //fontFamily:'serif',
-   fontWeight:'bold',
-   fontSize:30,
-   color:'green',
-   marginLeft:-10
-},
-description:{
-    fontWeight:'bold',
-    fontSize:20,
-    color:'green',
-    marginLeft:-5,
-    marginTop:-10,
+  container: {
+    flex: 1,
+  },
+  gradient: {
+    flex: 1,
+    position: 'relative',
+  },
 
-},
-tiImg:{
-  flexDirection:'row',
-  justifyContent:'center',
-  alignItems:'center',
-  marginHorizontal:10,
-  marginRight:80,
-  
-},
-img:{
-  fontSize:45,
-  marginBottom:12,
-  marginLeft:10,
-  color:'white'
-},
-/*buttonContainer:{
-flexDirection:'row',
-marginTop:20,
-borderWidth:2,
-width:'80%',
-height:60,
-borderRadius:100,
-},*/
-loginButtonWrapper:{
-   height:50,
-   width:'100%',
-   borderRadius:5,
-   alignItems:'center',
-   justifyContent:'center',
-   marginTop:80,
-   //backgroundColor: 'rgba(245, 240, 240, 0.3)',
-   backgroundColor:'black'
-},
-signUpButtonWrapper:{
-   height:50,
-   width:'100%',
-   borderRadius:5,
-   alignItems:'center',
-   justifyContent:'center',
-   marginVertical:10,
-   backgroundColor: 'rgba(69, 66, 66, 0.3)',
-},
-loginText:{
-   fontSize:20,
-   fontWeight:'bold',
-   color:'white',
-},
-signUpText:{
-   fontSize:20,
-    fontWeight:'bold',
-    color:'white',
-},
-logoImage:{
-   width: 180,
-   height: 150,
-   marginBottom:-140,
-   marginLeft: -30
-}
+  // Decorative circles
+  circle1: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    top: -50,
+    right: -50,
+  },
+  circle2: {
+    position: 'absolute',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    top: 100,
+    left: -30,
+  },
+  circle3: {
+    position: 'absolute',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    bottom: 200,
+    right: 30,
+  },
+
+  // Logo Section
+  logoContainer: {
+    paddingTop: 60,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  logoWrapper: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  logoImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+  },
+
+  // Content Section
+  contentContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 30,
+  },
+  welcomeTextContainer: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  welcomeTitle: {
+    fontSize: 18,
+    color: 'rgba(255,255,255,0.9)',
+    fontWeight: '500',
+    marginBottom: 8,
+  },
+  appName: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  tagline: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.85)',
+    marginBottom: 30,
+  },
+
+  // Features
+  featuresContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: 12,
+    marginTop: 10,
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  featureIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  featureText: {
+    fontSize: 15,
+    color: 'white',
+    fontWeight: '500',
+  },
+
+  // Image
+  imageContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  welcomeImage: {
+    width: width * 0.85,
+    height: 180,
+    resizeMode: 'contain',
+  },
+
+  // Buttons Section
+  buttonsContainer: {
+    paddingHorizontal: 30,
+    paddingBottom: 40,
+    gap: 15,
+  },
+  loginButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 56,
+    borderRadius: 28,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    gap: 10,
+  },
+  loginText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1B5E20',
+  },
+  signUpButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderWidth: 2,
+    borderColor: 'white',
+    gap: 10,
+  },
+  signUpText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+
+  // Guest Section
+  guestContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  guestText: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.8)',
+  },
+  guestLink: {
+    fontSize: 14,
+    color: 'white',
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
 });
 export default styles;

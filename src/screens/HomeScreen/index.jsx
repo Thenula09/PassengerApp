@@ -33,11 +33,11 @@ const HomeScreen = () => {
 
   const goToBusDetails = () => {
     setActiveTab('BusDetails');
-    navigation.navigate('Bus Details');
+    navigation.navigate('Destination Search');
   };
 
   const gotoSearch = () => {
-    navigation.navigate('Destination Search');
+    navigation.navigate('Destination');
   };
 
   const quickActions = [

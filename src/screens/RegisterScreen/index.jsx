@@ -10,6 +10,7 @@ import auth from '@react-native-firebase/auth';
 import styles from './styles';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
@@ -76,14 +77,16 @@ const RegisterScreen = () => {
           .ref(`/passenger/${userId}`)
           .set(newPassenger);
       })
-      .then(() => {
+      .then(async () => {
+        await AsyncStorage.setItem('isLoggedIn', 'true');
+        await AsyncStorage.setItem('userEmail', email);
         Toast.show({
           type: 'success',
           text1: 'Success! ',
           text2: 'Registration Successful!',
         });
         setTimeout(() => {
-          navigation.navigate('Login');
+          navigation.navigate('Home');
         }, 1000);
       })
       .catch((error) => {

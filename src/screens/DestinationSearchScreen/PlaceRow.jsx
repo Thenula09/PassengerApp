@@ -1,23 +1,19 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './styles';
 
 const PlaceRow = ({ data }) => {
   const isMataraBusStand = data.description === 'Matara Bus Stand';
+  const isNIBM = data.description === 'NIBM Matara';
 
   return (
     <View style={styles.row}>
-      <View
-        style={[
-          styles.iconContainer,
-          isMataraBusStand && { backgroundColor: 'black' },
-        ]}
-      >
-        <Entypo
-          name={isMataraBusStand ? 'home' : 'location-pin'}
-          size={20}
-          color={isMataraBusStand ? 'white' : 'white'} // Icon color
+      <View style={styles.iconContainer}>
+        <MaterialCommunityIcons
+          name={isMataraBusStand ? 'home' : isNIBM ? 'briefcase' : 'map-marker'}
+          size={22}
+          color="#4CAF50"
         />
       </View>
       <Text style={styles.locationText}>{data.description || data.vicinity}</Text>

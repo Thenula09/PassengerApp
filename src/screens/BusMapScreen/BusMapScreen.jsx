@@ -28,7 +28,7 @@ const BusMapScreen = ({ route }) => {
     );
   }, []);
 
-  const GOOGLE_MAPS_APIKEY = 'YOUR_GOOGLE_MAPS_API_KEY'; // Replace with your actual API key
+  const GOOGLE_MAPS_APIKEY = 'AIzaSyCIK1Z1X8H2GId9qNBVa4ilaccNG-cXuXE'; // Replace with your actual API key
 
   if (loading) {
     return (

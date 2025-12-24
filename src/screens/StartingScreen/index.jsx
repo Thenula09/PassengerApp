@@ -4,6 +4,7 @@ import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Onboarding from 'react-native-onboarding-swiper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DoneButtonComponent = ({ ...rest }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -186,11 +187,13 @@ const Start = () => {
     ).start();
   }, []);
 
-  const onSkip = () => {
+  const onSkip = async () => {
+    await AsyncStorage.setItem('hasSeenOnboarding', 'true');
     navigation.navigate('Welcome');
   };
 
-  const onDone = () => {
+  const onDone = async () => {
+    await AsyncStorage.setItem('hasSeenOnboarding', 'true');
     navigation.navigate('Welcome');
   };
 
