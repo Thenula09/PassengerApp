@@ -186,7 +186,7 @@ const SuccessScreen = ({ navigation }) => {
 
           <View style={styles.detailRow}>
             <Text style={styles.label}>Total Amount:</Text>
-            <Text style={[styles.value, { color: '#2E7D32', fontWeight: '700', fontSize: 16 }]}>₹{totalPayment}</Text>
+            <Text style={[styles.value, { color: '#2E7D32', fontWeight: '700', fontSize: 16 }]}>Rs:{totalPayment}</Text>
           </View>
 
           <View style={styles.divider} />

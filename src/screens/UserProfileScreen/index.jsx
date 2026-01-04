@@ -17,11 +17,11 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { launchImageLibrary } from 'react-native-image-picker';
-import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
+import { uploadProfileImageToSupabase } from '../../SupabaseConfig';
 
 const UserProfileScreen = () => {
   const navigation = useNavigation();
@@ -31,36 +31,107 @@ const UserProfileScreen = () => {
 
   const uid = auth().currentUser?.uid;
 
+  // Load profile image from device cache first, then from Firebase
   useEffect(() => {
     if (uid) {
-      const userRef = database().ref(`users/${uid}`);
+      loadProfileImageFromCache();
+      
+      const userRef = database().ref(`/passenger/${uid}`);
       userRef.on('value', snapshot => {
         if (snapshot.exists()) {
           const data = snapshot.val();
+          console.log('User data loaded:', data);
           setUserData(data);
-          setImageUri(data.profileImage || null);
+          
+          // If Firebase has a newer image, save it to cache
+          if (data.profileImage && data.profileImage !== imageUri) {
+            saveProfileImageToCache(data.profileImage);
+            setImageUri(data.profileImage);
+          }
+        } else {
+          console.log('No user data found');
         }
       });
+      
+      return () => userRef.off();
     }
-  }, []);
+  }, [uid]);
+
+  // Load profile image from device cache
+  const loadProfileImageFromCache = async () => {
+    try {
+      const cachedImageUrl = await AsyncStorage.getItem(`profileImage_${uid}`);
+      if (cachedImageUrl) {
+        console.log('Loaded profile image from device cache');
+        setImageUri(cachedImageUrl);
+      }
+    } catch (error) {
+      console.error('Error loading cached profile image:', error);
+    }
+  };
+
+  // Save profile image URL to device cache
+  const saveProfileImageToCache = async (imageUrl) => {
+    try {
+      await AsyncStorage.setItem(`profileImage_${uid}`, imageUrl);
+      console.log('Profile image URL saved to device cache');
+    } catch (error) {
+      console.error('Error saving profile image to cache:', error);
+    }
+  };
 
   const handleImagePick = async () => {
-    const result = await launchImageLibrary({ mediaType: 'photo' });
-    if (result?.assets && result.assets.length > 0) {
-      const asset = result.assets[0];
-      const { uri, fileName } = asset;
-      const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-      const reference = storage().ref(`/profileImages/${uid}/${fileName}`);
+    try {
+      const result = await launchImageLibrary({ 
+        mediaType: 'photo',
+        quality: 0.8,
+      });
 
-      await reference.putFile(uploadUri);
-      const downloadURL = await reference.getDownloadURL();
+      if (result?.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+        const { uri } = asset;
 
-      await database().ref(`users/${uid}`).update({ profileImage: downloadURL });
-      setImageUri(downloadURL);
+        console.log('Image selected from:', uri);
+
+        // Show loading
+        Toast.show({
+          type: 'info',
+          text1: 'Uploading...',
+          text2: 'Please wait while we upload your photo',
+          duration: 3000,
+        });
+
+        // Upload to Supabase Storage
+        const downloadURL = await uploadProfileImageToSupabase(uid, uri);
+        console.log('Image uploaded to Supabase:', downloadURL);
+
+        // Update user data in Firebase Realtime Database
+        await database().ref(`/passenger/${uid}`).update({ 
+          profileImage: downloadURL,
+          profileImageUpdatedAt: new Date().toISOString(),
+        });
+
+        // Save to device cache
+        await saveProfileImageToCache(downloadURL);
+
+        // Update local state
+        setImageUri(downloadURL);
+
+        Toast.show({
+          type: 'success',
+          text1: 'Success!',
+          text2: 'Profile picture updated successfully!',
+          duration: 2000,
+        });
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      console.error('Error message:', error.message);
       Toast.show({
-        type: 'success',
-        text1: 'Success!',
-        text2: 'Profile picture updated!'
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to upload image: ' + error.message,
+        duration: 3000,
       });
     }
   };
@@ -154,7 +225,7 @@ const UserProfileScreen = () => {
               </View>
               <View style={styles.infoTextContainer}>
                 <Text style={styles.infoLabel}>Phone Number</Text>
-                <Text style={styles.infoValue}>{userData.phone || 'Not set'}</Text>
+                <Text style={styles.infoValue}>{userData.mobile || 'Not set'}</Text>
               </View>
             </View>
 
