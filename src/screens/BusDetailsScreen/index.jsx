@@ -9,6 +9,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Toast from 'react-native-toast-message';
+import BottomNavBar from '../../components/BottomNavBar';
+import Header from '../../components/Header';
 
 const BusDetailsScreen = () => {
   const navigation = useNavigation();
@@ -81,10 +83,15 @@ const BusDetailsScreen = () => {
   };
 
   const goToMap = (bus) => {
-    const { currentLocation, driverLocation } = bus;
     navigation.navigate('BusMapScreen', {
-      currentLocation: currentLocation,
-      driverLocation: driverLocation,
+      busData: {
+        busId: bus.busId,
+        busNumber: bus.busNumber,
+        departureTime: bus.departureTime,
+        startLocation: bus.startLocation,
+        endLocation: bus.endLocation,
+      },
+      currentLocation: bus.currentLocation || null,
     });
   };
 
@@ -106,27 +113,11 @@ const BusDetailsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
-      
-      <LinearGradient
-        colors={['#1B5E20', '#2E7D32', '#388E3C']}
-        style={styles.headerGradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <Ionicons name="arrow-back" size={26} color="white" />
-          </TouchableOpacity>
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.headerTitle}>Available Buses</Text>
-            <Text style={styles.headerSubtitle}>
-              {availableBuses.length} {availableBuses.length === 1 ? 'bus' : 'buses'} found
-            </Text>
-          </View>
-          <View style={styles.placeholder} />
-        </View>
-      </LinearGradient>
+      <Header
+        title="Available Buses"
+        subtitle={`${availableBuses.length} ${availableBuses.length === 1 ? 'bus' : 'buses'} found`}
+        showBackButton={true}
+      />
 
       <ScrollView 
         style={styles.content}
@@ -242,51 +233,7 @@ const BusDetailsScreen = () => {
         <View style={{ height: 100 }} />
       </ScrollView>
 
-      <View style={styles.bottomNavigation}>
-        <TouchableOpacity style={styles.navButton} onPress={handleHome}>
-          <Ionicons
-            name={activeTab === 'home' ? 'home' : 'home-outline'}
-            size={24}
-            color={activeTab === 'home' ? '#4CAF50' : '#999'}
-          />
-          <Text style={[styles.navText, activeTab === 'home' && styles.activeNavText]}>
-            Home
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.navButton} onPress={goToBooking}>
-          <Ionicons
-            name={activeTab === 'booking' ? 'search' : 'search-outline'}
-            size={24}
-            color={activeTab === 'booking' ? '#4CAF50' : '#999'}
-          />
-          <Text style={[styles.navText, activeTab === 'booking' && styles.activeNavText]}>
-            Booking
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.navButton} onPress={() => setActiveTab('buses')}>
-          <FontAwesome5
-            name="bus"
-            size={22}
-            color={activeTab === 'buses' ? '#4CAF50' : '#999'}
-          />
-          <Text style={[styles.navText, activeTab === 'buses' && styles.activeNavText]}>
-            Buses
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.navButton} onPress={goToUserProfile}>
-          <Ionicons
-            name={activeTab === 'profile' ? 'person' : 'person-outline'}
-            size={24}
-            color={activeTab === 'profile' ? '#4CAF50' : '#999'}
-          />
-          <Text style={[styles.navText, activeTab === 'profile' && styles.activeNavText]}>
-            Profile
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <BottomNavBar activeTab="Booking" />
 
       <Toast />
     </View>

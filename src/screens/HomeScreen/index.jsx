@@ -1,18 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Pressable, ScrollView, StatusBar } from 'react-native';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { View, Text, TouchableOpacity, Pressable, ScrollView, StatusBar, Animated, Easing, Modal, Dimensions } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import QRCode from 'react-native-qrcode-svg';
 import styles from './styles';
+import BottomNavBar from '../../components/BottomNavBar';
+import Header from '../../components/Header';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState('Home');
   const [greeting, setGreeting] = useState('');
+  const [bookingCount, setBookingCount] = useState(0);
+  const [latestBooking, setLatestBooking] = useState(null);
+  const [hasActiveBooking, setHasActiveBooking] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
+
+  // Animation for tracking icon
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const rotateAnim = useRef(new Animated.Value(0)).current;
+  const ringScale = useRef(new Animated.Value(0.8)).current;
+  const ringOpacity = useRef(new Animated.Value(1)).current;
+  const modalScale = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -20,6 +38,101 @@ const HomeScreen = () => {
     else if (hour < 18) setGreeting('Good Afternoon');
     else setGreeting('Good Evening');
   }, []);
+
+  // Animated pulse effect for track button
+  useEffect(() => {
+    if (hasActiveBooking) {
+      // Pulse animation
+      const pulse = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.15,
+            duration: 800,
+            easing: Easing.ease,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 800,
+            easing: Easing.ease,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+
+      // Ring animation
+      const ring = Animated.loop(
+        Animated.parallel([
+          Animated.timing(ringScale, {
+            toValue: 1.8,
+            duration: 1500,
+            easing: Easing.ease,
+            useNativeDriver: true,
+          }),
+          Animated.timing(ringOpacity, {
+            toValue: 0,
+            duration: 1500,
+            easing: Easing.ease,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+
+      pulse.start();
+      ring.start();
+
+      return () => {
+        pulse.stop();
+        ring.stop();
+      };
+    }
+  }, [hasActiveBooking]);
+
+  // Fetch booking count and latest booking
+  useFocusEffect(
+    useCallback(() => {
+      const fetchBookings = async () => {
+        try {
+          const user = auth().currentUser;
+          if (user?.uid) {
+            const snapshot = await database()
+              .ref(`/receipts/${user.uid}`)
+              .orderByChild('paymentTimestamp')
+              .once('value');
+            const data = snapshot.val();
+            if (data) {
+              const bookingsList = Object.entries(data).map(([key, value]) => ({
+                id: key,
+                ...value,
+              }));
+              setBookingCount(bookingsList.length);
+              
+              // Get latest booking (sort by timestamp)
+              bookingsList.sort((a, b) => 
+                new Date(b.paymentTimestamp) - new Date(a.paymentTimestamp)
+              );
+              if (bookingsList.length > 0) {
+                setLatestBooking(bookingsList[0]);
+                
+                // Check if booking is for today (active booking)
+                const bookingDate = new Date(bookingsList[0].paymentTimestamp);
+                const today = new Date();
+                const isToday = bookingDate.toDateString() === today.toDateString();
+                setHasActiveBooking(isToday);
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching bookings:', error);
+        }
+      };
+      fetchBookings();
+      
+      // Reset ring animation on focus
+      ringScale.setValue(0.8);
+      ringOpacity.setValue(1);
+    }, [])
+  );
 
   const goToUserProfile = () => {
     setActiveTab('Profile');
@@ -40,66 +153,85 @@ const HomeScreen = () => {
     navigation.navigate('Destination');
   };
 
-  const quickActions = [
-    { id: 1, icon: 'ticket', label: 'Book Ticket', color: '#4CAF50', onPress: gotoSearch },
-    { id: 2, icon: 'bus', label: 'Track Bus', color: '#FF9800', onPress: goToBusDetails },
-    { id: 3, icon: 'clock-time-four', label: 'Schedule', color: '#2196F3', onPress: () => {} },
-    { id: 4, icon: 'map-marker', label: 'Routes', color: '#E91E63', onPress: () => {} },
-  ];
+  const goToMyBookings = () => {
+    navigation.navigate('MyBookings');
+  };
+
+  const goToTrackBus = () => {
+    setActiveTab('Track');
+    if (latestBooking && latestBooking.busId) {
+      navigation.navigate('BusMapScreen', {
+        busData: {
+          busId: latestBooking.busId,
+          busNumber: latestBooking.busNumber,
+          departureTime: latestBooking.departureTime,
+          startLocation: latestBooking.startLocation,
+          endLocation: latestBooking.endLocation,
+        },
+        currentLocation: null, // Will be fetched from Firebase in BusMapScreen
+      });
+    } else {
+      // If no active booking, go to booking screen
+      navigation.navigate('Destination');
+    }
+  };
+
+  // QR Modal functions
+  const openQRModal = () => {
+    setShowQRModal(true);
+    Animated.spring(modalScale, {
+      toValue: 1,
+      friction: 8,
+      tension: 40,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const closeQRModal = () => {
+    Animated.timing(modalScale, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => setShowQRModal(false));
+  };
 
   return (
     <View style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-      
       {/* Header Section */}
-      <LinearGradient 
-        colors={['#4CAF50', '#45a049', '#388E3C']} 
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <View style={styles.headerContent}>
-          <View>
-            <Text style={styles.greetingText}>{greeting} 👋</Text>
-            <Text style={styles.headerSubText}>Where do you want to go?</Text>
-          </View>
-          <TouchableOpacity style={styles.notificationBtn}>
-            <Ionicons name="notifications-outline" size={26} color="white" />
-            <View style={styles.notificationBadge} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Search Box */}
-        <Pressable style={styles.searchBox} onPress={gotoSearch}>
-          <Ionicons name="search" size={22} color="#4CAF50" />
-          <Text style={styles.searchText}>Search destinations...</Text>
-          <AntDesign name="arrowright" size={20} color="#4CAF50" />
-        </Pressable>
-      </LinearGradient>
+      <Header
+        title={`${greeting} 👋`}
+        subtitle="Where do you want to go?"
+        showNotification={true}
+        showSearch={true}
+        onSearchPress={gotoSearch}
+      />
 
       <ScrollView 
         style={styles.content}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Quick Actions */}
-        <View style={styles.quickActionsContainer}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.quickActions}>
-            {quickActions.map((action) => (
-              <TouchableOpacity
-                key={action.id}
-                style={styles.actionCard}
-                onPress={action.onPress}
-              >
-                <View style={[styles.actionIcon, { backgroundColor: action.color + '20' }]}>
-                  <MaterialCommunityIcons name={action.icon} size={28} color={action.color} />
-                </View>
-                <Text style={styles.actionLabel}>{action.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+        
+
+        {/* Latest Booking QR Code Section */}
+        {latestBooking && (
+          <TouchableOpacity 
+            style={styles.qrTicketCard}
+            onPress={openQRModal}
+            activeOpacity={0.85}
+          >
+            <View style={styles.qrTicketIconContainer}>
+              <MaterialCommunityIcons name="qrcode-scan" size={32} color="#4CAF50" />
+            </View>
+            <View style={styles.qrTicketTextContainer}>
+              <Text style={styles.qrTicketTitle}>View Your Ticket</Text>
+              <Text style={styles.qrTicketSubtitle}>Tap to show QR code</Text>
+            </View>
+            <View style={styles.qrTicketArrow}>
+              <Ionicons name="chevron-forward" size={24} color="#4CAF50" />
+            </View>
+          </TouchableOpacity>
+        )}
 
         {/* Map Section */}
         <View style={styles.mapContainer}>
@@ -174,35 +306,140 @@ const HomeScreen = () => {
       </ScrollView>
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNavigation}>
-        <TouchableOpacity
-          style={[styles.navButton, activeTab === 'Home' && styles.activeTab]}
-          onPress={() => setActiveTab('Home')}>
-          <Ionicons name={activeTab === 'Home' ? 'home' : 'home-outline'} size={24} color={activeTab === 'Home' ? '#4CAF50' : '#666'} />
-          <Text style={[styles.navText, activeTab === 'Home' && styles.activeNavText]}>Home</Text>
-        </TouchableOpacity>
+      <BottomNavBar activeTab="Home" />
 
-        <TouchableOpacity
-          style={[styles.navButton, activeTab === 'Booking' && styles.activeTab]}
-          onPress={goToBooking}>
-          <AntDesign name="calendar" size={24} color={activeTab === 'Booking' ? '#4CAF50' : '#666'} />
-          <Text style={[styles.navText, activeTab === 'Booking' && styles.activeNavText]}>Booking</Text>
-        </TouchableOpacity>
+      {/* QR Code Modal */}
+      <Modal
+        visible={showQRModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={closeQRModal}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPress={closeQRModal}
+        >
+          <Animated.View 
+            style={[
+              styles.modalContainer,
+              { transform: [{ scale: modalScale }] }
+            ]}
+          >
+            <TouchableOpacity activeOpacity={1} onPress={() => {}}>
+              {/* Modal Header */}
+              <View style={styles.modalHeader}>
+                <View style={styles.modalHeaderIcon}>
+                  <Ionicons name="ticket" size={24} color="#4CAF50" />
+                </View>
+                <Text style={styles.modalHeaderTitle}>Your Ticket</Text>
+                <TouchableOpacity style={styles.modalCloseBtn} onPress={closeQRModal}>
+                  <Ionicons name="close" size={24} color="#666" />
+                </TouchableOpacity>
+              </View>
 
-        <TouchableOpacity
-          style={[styles.navButton, activeTab === 'BusDetails' && styles.activeTab]}
-          onPress={goToBusDetails}>
-          <Ionicons name={activeTab === 'BusDetails' ? 'bus' : 'bus-outline'} size={24} color={activeTab === 'BusDetails' ? '#4CAF50' : '#666'} />
-          <Text style={[styles.navText, activeTab === 'BusDetails' && styles.activeNavText]}>Buses</Text>
-        </TouchableOpacity>
+              {/* Large QR Code */}
+              <View style={styles.modalQRContainer}>
+                <View style={styles.modalQRWrapper}>
+                  {latestBooking && (
+                    <QRCode
+                      value={JSON.stringify({
+                        bookingId: latestBooking.id,
+                        busId: latestBooking.busId,
+                        busNumber: latestBooking.busNumber,
+                        passengerName: latestBooking.passengerName,
+                        selectedSeats: latestBooking.selectedSeats,
+                        startLocation: latestBooking.startLocation,
+                        endLocation: latestBooking.endLocation,
+                        departureTime: latestBooking.departureTime,
+                        totalPayment: latestBooking.totalPayment,
+                      })}
+                      size={SCREEN_WIDTH * 0.55}
+                      color="#2E7D32"
+                      backgroundColor="#fff"
+                    />
+                  )}
+                </View>
+                <Text style={styles.modalQRHint}>Show this QR code to the conductor</Text>
+              </View>
 
-        <TouchableOpacity
-          style={[styles.navButton, activeTab === 'Profile' && styles.activeTab]}
-          onPress={goToUserProfile}>
-          <FontAwesome5 name={activeTab === 'Profile' ? 'user-alt' : 'user'} size={22} color={activeTab === 'Profile' ? '#4CAF50' : '#666'} />
-          <Text style={[styles.navText, activeTab === 'Profile' && styles.activeNavText]}>Profile</Text>
+              {/* Passenger Details */}
+              {latestBooking && (
+                <View style={styles.modalDetailsContainer}>
+                  {/* Passenger Name */}
+                  <View style={styles.modalDetailRow}>
+                    <View style={styles.modalDetailIcon}>
+                      <Ionicons name="person" size={18} color="#4CAF50" />
+                    </View>
+                    <View style={styles.modalDetailTextContainer}>
+                      <Text style={styles.modalDetailLabel}>Passenger</Text>
+                      <Text style={styles.modalDetailValue}>{latestBooking.passengerName || 'N/A'}</Text>
+                    </View>
+                  </View>
+
+                  {/* Route */}
+                  <View style={styles.modalDetailRow}>
+                    <View style={styles.modalDetailIcon}>
+                      <MaterialCommunityIcons name="map-marker-path" size={18} color="#2196F3" />
+                    </View>
+                    <View style={styles.modalDetailTextContainer}>
+                      <Text style={styles.modalDetailLabel}>Route</Text>
+                      <Text style={styles.modalDetailValue} numberOfLines={1}>
+                        {latestBooking.startLocation} → {latestBooking.endLocation}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* Bus & Seats Row */}
+                  <View style={styles.modalDetailGrid}>
+                    <View style={styles.modalDetailGridItem}>
+                      <View style={styles.modalDetailIcon}>
+                        <FontAwesome5 name="bus" size={16} color="#FF9800" />
+                      </View>
+                      <View style={styles.modalDetailTextContainer}>
+                        <Text style={styles.modalDetailLabel}>Bus</Text>
+                        <Text style={styles.modalDetailValue}>{latestBooking.busNumber}</Text>
+                      </View>
+                    </View>
+                    <View style={styles.modalDetailGridItem}>
+                      <View style={styles.modalDetailIcon}>
+                        <MaterialCommunityIcons name="seat" size={18} color="#9C27B0" />
+                      </View>
+                      <View style={styles.modalDetailTextContainer}>
+                        <Text style={styles.modalDetailLabel}>Seats</Text>
+                        <Text style={styles.modalDetailValue}>{latestBooking.selectedSeats}</Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* Departure Time */}
+                  <View style={styles.modalDetailRow}>
+                    <View style={styles.modalDetailIcon}>
+                      <Ionicons name="time" size={18} color="#E91E63" />
+                    </View>
+                    <View style={styles.modalDetailTextContainer}>
+                      <Text style={styles.modalDetailLabel}>Departure</Text>
+                      <Text style={styles.modalDetailValue}>{latestBooking.departureTime}</Text>
+                    </View>
+                  </View>
+                </View>
+              )}
+
+              {/* View All Booking Button */}
+              <TouchableOpacity 
+                style={styles.modalViewAllBtn} 
+                onPress={() => {
+                  closeQRModal();
+                  setTimeout(() => goToMyBookings(), 300);
+                }}
+              >
+                <Text style={styles.modalViewAllText}>View All Tickets</Text>
+                <Ionicons name="chevron-forward" size={18} color="#4CAF50" />
+              </TouchableOpacity>
+            </TouchableOpacity>
+          </Animated.View>
         </TouchableOpacity>
-      </View>
+      </Modal>
     </View>
   );
 };

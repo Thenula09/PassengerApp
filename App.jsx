@@ -9,6 +9,7 @@ import UserProfileScreen from './src/screens/UserProfileScreen';
 import DestinationSearchScreen from './src/screens/DestinationSearchScreen';
 import BusDetailsScreen from './src/screens/BusDetailsScreen';
 import EditUserProfileScreen from './src/screens/EditUserProfileScreen';
+import MyBookingsScreen from './src/screens/MyBookingsScreen';
 import { PermissionsAndroid, Platform, ActivityIndicator, View } from 'react-native';
 import { GLOBAL_STYLES, COLORS } from './src/theme';
 import Geolocation from '@react-native-community/geolocation';
@@ -131,6 +132,7 @@ const App = () => {
           <Stack.Screen name="BusLayoutScreen" component={BusLayoutScreen} />
           <Stack.Screen name="SeatDetailsScreen" component={SeatDetailsScreen} />
           <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
+          <Stack.Screen name="MyBookings" component={MyBookingsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>

@@ -1,4 +1,10 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform, StatusBar } from 'react-native';
+
+// Consistent with Header component constants
+const HEADER_PADDING_TOP = Platform.OS === 'ios' ? 50 : (StatusBar.currentHeight || 24) + 10;
+const HEADER_PADDING_HORIZONTAL = 20;
+const HEADER_BORDER_RADIUS = 30;
+const BUTTON_SIZE = 44;
 
 const styles = StyleSheet.create({
   container: {
@@ -6,9 +12,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   headerGradient: {
-    paddingTop: 50,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    paddingTop: HEADER_PADDING_TOP,
+    paddingHorizontal: HEADER_PADDING_HORIZONTAL,
+    borderBottomLeftRadius: HEADER_BORDER_RADIUS,
+    borderBottomRightRadius: HEADER_BORDER_RADIUS,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -19,13 +26,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    minHeight: 45,
   },
   backButton: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
+    width: BUTTON_SIZE,
+    height: BUTTON_SIZE,
+    borderRadius: BUTTON_SIZE / 2,
     backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -36,9 +42,9 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   editButton: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
+    width: BUTTON_SIZE,
+    height: BUTTON_SIZE,
+    borderRadius: BUTTON_SIZE / 2,
     backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',

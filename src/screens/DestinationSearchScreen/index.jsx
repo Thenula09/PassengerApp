@@ -10,6 +10,8 @@ import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import PlaceRow from './PlaceRow';
 import LinearGradient from 'react-native-linear-gradient';
+import BottomNavBar from '../../components/BottomNavBar';
+import Header from '../../components/Header';
 
 const homePlace = {
   description: 'Matara Bus Stand',
@@ -57,27 +59,11 @@ const DestinationSearchScreen = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
-      
-      <LinearGradient
-        colors={['#1B5E20', '#2E7D32', '#388E3C']}
-        style={styles.headerGradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <View style={styles.header}>
-          <Pressable style={styles.backButton} onPress={handleHome}>
-            <Ionicons name="arrow-back" size={26} color="white" />
-          </Pressable>
-          <Text style={styles.headerTitle}>Search Destination</Text>
-          <View style={styles.placeholder} />
-        </View>
-
-        <View style={styles.infoCard}>
-          <MaterialCommunityIcons name="map-marker-radius" size={24} color="#4CAF50" />
-          <Text style={styles.infoText}>Enter your journey details to find buses</Text>
-        </View>
-      </LinearGradient>
+      <Header
+        title="Search Destination"
+        subtitle="Enter your journey details to find buses"
+        showBackButton={true}
+      />
 
       <View style={styles.content}>
         <View style={styles.searchContainer}>
@@ -160,35 +146,7 @@ const DestinationSearchScreen = () => {
       </View>
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNavigation}>
-        <TouchableOpacity
-          style={[styles.navButton, activeTab === 'Home' && styles.activeTab]}
-          onPress={handleHome}>
-          <Ionicons name={activeTab === 'Home' ? 'home' : 'home-outline'} size={24} color={activeTab === 'Home' ? '#4CAF50' : '#666'} />
-          <Text style={[styles.navText, activeTab === 'Home' && styles.activeNavText]}>Home</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.navButton, activeTab === 'Booking' && styles.activeTab]}
-          onPress={goToBooking}>
-          <AntDesign name="calendar" size={24} color={activeTab === 'Booking' ? '#4CAF50' : '#666'} />
-          <Text style={[styles.navText, activeTab === 'Booking' && styles.activeNavText]}>Booking</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.navButton, activeTab === 'BusDetails' && styles.activeTab]}
-          onPress={goToBusDetails}>
-          <Ionicons name={activeTab === 'BusDetails' ? 'bus' : 'bus-outline'} size={24} color={activeTab === 'BusDetails' ? '#4CAF50' : '#666'} />
-          <Text style={[styles.navText, activeTab === 'BusDetails' && styles.activeNavText]}>Buses</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.navButton, activeTab === 'Profile' && styles.activeTab]}
-          onPress={goToUserProfile}>
-          <FontAwesome5 name={activeTab === 'Profile' ? 'user-alt' : 'user'} size={22} color={activeTab === 'Profile' ? '#4CAF50' : '#666'} />
-          <Text style={[styles.navText, activeTab === 'Profile' && styles.activeNavText]}>Profile</Text>
-        </TouchableOpacity>
-      </View>
+      <BottomNavBar activeTab="Booking" />
     </View>
   );
 };

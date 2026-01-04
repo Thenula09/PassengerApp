@@ -7,6 +7,7 @@ import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/nativ
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import LinearGradient from 'react-native-linear-gradient';
+import Header from '../../../components/Header';
 
 // Color constants
 const GREEN_PRIMARY = '#2E7D32';
@@ -177,26 +178,14 @@ const SeatDetailsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
-      {/* User Avatar Bar */}
-      <View style={styles.avatarBar}>
-        <View style={styles.avatarContainer}>
-          <View style={styles.avatarCircle}>
-            <Ionicons name="person-circle" size={44} color={GREEN_PRIMARY} />
-          </View>
-          <View style={styles.userInfo}>
-            <Text style={styles.userName}>{passengerName || 'Passenger'}</Text>
-            <Text style={styles.userPhone}>{phoneNumber || 'Not provided'}</Text>
-          </View>
-        </View>
-        <TouchableOpacity 
-          style={styles.profileButton}
-          onPress={() => navigation.navigate('Profile')}
-        >
-          <Ionicons name="settings" size={24} color={GREEN_PRIMARY} />
-        </TouchableOpacity>
-      </View>
+      {/* Header */}
+      <Header 
+        title="Booking Details" 
+        subtitle={`${selectedSeats.length} seat${selectedSeats.length > 1 ? 's' : ''} selected`}
+        showBackButton={true}
+      />
 
       {/* Header Section */}
       <View style={styles.headerSection}>

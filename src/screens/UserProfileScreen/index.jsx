@@ -22,6 +22,7 @@ import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
 import { uploadProfileImageToSupabase } from '../../SupabaseConfig';
+import BottomNavBar from '../../components/BottomNavBar';
 
 const UserProfileScreen = () => {
   const navigation = useNavigation();
@@ -289,35 +290,7 @@ const UserProfileScreen = () => {
       </ScrollView>
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNavigation}>
-        <TouchableOpacity
-          style={[styles.navButton, activeTab === 'Home' && styles.activeTab]}
-          onPress={arrowLogin}>
-          <Ionicons name={activeTab === 'Home' ? 'home' : 'home-outline'} size={24} color={activeTab === 'Home' ? '#4CAF50' : '#666'} />
-          <Text style={[styles.navText, activeTab === 'Home' && styles.activeNavText]}>Home</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.navButton, activeTab === 'Booking' && styles.activeTab]}
-          onPress={goToBooking}>
-          <AntDesign name="calendar" size={24} color={activeTab === 'Booking' ? '#4CAF50' : '#666'} />
-          <Text style={[styles.navText, activeTab === 'Booking' && styles.activeNavText]}>Booking</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.navButton, activeTab === 'BusDetails' && styles.activeTab]}
-          onPress={goToBusDetails}>
-          <Ionicons name={activeTab === 'BusDetails' ? 'bus' : 'bus-outline'} size={24} color={activeTab === 'BusDetails' ? '#4CAF50' : '#666'} />
-          <Text style={[styles.navText, activeTab === 'BusDetails' && styles.activeNavText]}>Buses</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.navButton, activeTab === 'Profile' && styles.activeTab]}
-          onPress={() => setActiveTab('Profile')}>
-          <FontAwesome5 name={activeTab === 'Profile' ? 'user-alt' : 'user'} size={22} color={activeTab === 'Profile' ? '#4CAF50' : '#666'} />
-          <Text style={[styles.navText, activeTab === 'Profile' && styles.activeNavText]}>Profile</Text>
-        </TouchableOpacity>
-      </View>
+      <BottomNavBar activeTab="Profile" />
 
       <Toast />
     </View>
