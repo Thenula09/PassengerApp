@@ -86,7 +86,7 @@ const RegisterScreen = () => {
           text2: 'Registration Successful!',
         });
         setTimeout(() => {
-          navigation.navigate('Home');
+          navigation.navigate('Login');
         }, 1000);
       })
       .catch((error) => {

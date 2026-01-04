@@ -64,7 +64,20 @@ const BusDetailsScreen = () => {
   }, [originPlace, destinationPlace]);
 
   const gotoLayout = (bus) => {
-    navigation.navigate('Bus Layout', { busId: bus.busId });
+    navigation.navigate('Bus Layout', {
+      busId: bus.busId,
+      busNumber: bus.busNumber,
+      busName: bus.name || bus.busNumber,
+      departureTime: bus.departureTime,
+      arrivalTime: bus.arrivalTime,
+      price: bus.price,
+      availableSeats: bus.availableSeats,
+      totalSeats: bus.totalSeats || 45,
+      isAC: bus.isAC,
+      busType: bus.busType || 'Standard',
+      startLocation: bus.startLocation,
+      endLocation: bus.endLocation,
+    });
   };
 
   const goToMap = (bus) => {

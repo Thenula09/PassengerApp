@@ -1,9 +1,11 @@
-import { StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
+import { COLORS } from '../../theme';
 
 const styles = StyleSheet.create({
 container:{
     flex:1,
-    padding:10,
+    padding:16,
+    backgroundColor: COLORS.background,
 },
 backArrowContainer:{
     height:50,
@@ -21,13 +23,14 @@ welcomeMsg:{
 welcomeText:{
     fontSize:32,
     fontWeight:'bold',
-    color:'#1B5E20',
+    color: COLORS.primary,
+    letterSpacing: 0.5,
 },
-p:{
-    fontSize:16,
-    color:'#2E7D32',
-    marginTop: 8,
-},
+    p:{
+        fontSize:16,
+        color: COLORS.text,
+        marginTop: 8,
+    },
 form:{
     marginVertical:130,
 },
@@ -36,7 +39,7 @@ inputContainer:{
     paddingHorizontal:18,
     alignItems:'center',
     height: 55,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.card,
     borderRadius: 15,
     marginBottom: 15,
     elevation: 3,

@@ -1,10 +1,12 @@
 import { StyleSheet, Dimensions } from 'react-native';
+import { COLORS } from '../../theme';
 
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.background,
   },
   gradient: {
     flex: 1,

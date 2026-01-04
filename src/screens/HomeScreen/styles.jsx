@@ -1,11 +1,12 @@
 import { StyleSheet, Dimensions } from 'react-native';
+import { COLORS } from '../../theme';
 
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: COLORS.background,
   },
 
   // Header Styles
@@ -15,9 +16,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    shadowColor: '#000',
+    backgroundColor: COLORS.primary,
+    shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 8,
   },
@@ -28,14 +30,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   greetingText: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: 'white',
+    color: COLORS.background,
     marginBottom: 4,
+    letterSpacing: 0.5,
   },
   headerSubText: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.9)',
+    fontSize: 15,
+    color: COLORS.accent,
+    opacity: 0.85,
   },
   notificationBtn: {
     width: 45,

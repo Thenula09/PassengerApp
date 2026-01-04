@@ -1,116 +1,218 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ActivityIndicator, Alert, ScrollView } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import QRCode from 'react-native-qrcode-svg';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import LinearGradient from 'react-native-linear-gradient';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const SuccessScreen = ({ navigation }) => {
   const route = useRoute();
-  const { busId, fromLocation, toLocation, totalPayment, paymentTimestamp } = route.params;
+  const { 
+    busId, 
+    busNumber,
+    busName,
+    passengerName,
+    phoneNumber,
+    selectedSeats,
+    startLocation, 
+    endLocation, 
+    departureTime,
+    arrivalTime,
+    totalPayment, 
+    paymentTimestamp 
+  } = route.params;
 
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(true);
+  const [bookingId, setBookingId] = useState('');
 
-  const handleSaveReceipt = () => {
-  Alert.alert(
-    "Confirm Save",
-    "Do you want to save the receipt and go to Home screen?",
-    [
-      {
-        text: "Cancel",
-        style: "cancel"
-      },
-      {
-        text: "Yes",
-        onPress: () => {
-          navigation.navigate('Receipt', {
-            busId,
-            fromLocation,
-            toLocation,
-            totalPayment,
-            paymentTimestamp,
-            username,
-            email,
-          });
-        }
-      }
-    ],
-    { cancelable: true }
-  );
-};
-
+  // Fetch user details and save booking receipt to Firebase
   useEffect(() => {
-    const fetchUserDetails = async () => {
+    const fetchAndSaveBooking = async () => {
       try {
         const user = auth().currentUser;
-        //console.log('User ID:', user?.uid);
 
         if (user?.uid) {
           const snapshot = await database().ref(`/passenger/${user.uid}`).once('value');
-          const data = snapshot.val();
+          const userData = snapshot.val();
 
-          //console.log('Fetched data:', data);
+          // Save receipt to Firebase
+          const receiptData = {
+            userId: user.uid,
+            busId: busId,
+            busNumber: busNumber,
+            busName: busName,
+            passengerName: passengerName || userData?.username || 'Guest',
+            phoneNumber: phoneNumber,
+            selectedSeats: Array.isArray(selectedSeats) ? selectedSeats.join(', ') : selectedSeats,
+            startLocation: startLocation,
+            endLocation: endLocation,
+            departureTime: departureTime,
+            arrivalTime: arrivalTime,
+            totalPayment: totalPayment,
+            paymentTimestamp: paymentTimestamp,
+            receiptGeneratedAt: new Date().toISOString(),
+            status: 'completed',
+          };
 
-          if (data) {
-            setUsername(data.username || 'N/A');
-            setEmail(data.email || 'N/A');
-          }
+          // Save to Firebase /receipts/{userId}
+          const newReceiptRef = await database()
+            .ref(`/receipts/${user.uid}`)
+            .push(receiptData);
+          
+          setBookingId(newReceiptRef.key);
         }
       } catch (error) {
-        //console.error('Error fetching user details:', error);
+        console.error('Error saving receipt:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserDetails();
+    fetchAndSaveBooking();
   }, []);
 
+  const handleSaveReceipt = () => {
+    Alert.alert(
+      "Confirm",
+      "Do you want to go back to Home screen?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            navigation.navigate('Home');
+          }
+        }
+      ],
+      { cancelable: true }
+    );
+  };
+
   const qrValue = JSON.stringify({
+    bookingId,
     busId,
-    fromLocation,
-    toLocation,
+    busNumber,
+    busName,
+    passengerName,
+    selectedSeats,
+    startLocation,
+    endLocation,
+    departureTime,
+    arrivalTime,
     totalPayment,
     paymentTimestamp,
-    username,
-    email,
   });
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#28a745" />
-        <Text style={{ marginTop: 10 }}>Loading receipt...</Text>
+        <ActivityIndicator size="large" color="#2E7D32" />
+        <Text style={{ marginTop: 10, color: '#666' }}>Processing your booking...</Text>
       </View>
     );
   }
 
   return (
-    <LinearGradient colors={['white','white', 'green']} style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.title}>🧾 Payment Receipt</Text>
-
-        <Text style={styles.label}> Passenger Name: <Text style={styles.value}>{username}</Text></Text>
-        <Text style={styles.label}> Email: <Text style={styles.value}>{email}</Text></Text>
-        <Text style={styles.label}> Bus ID: <Text style={styles.value}>{busId}</Text></Text>
-        <Text style={styles.label}> From: <Text style={styles.value}>{fromLocation}</Text></Text>
-        <Text style={styles.label}> To: <Text style={styles.value}>{toLocation}</Text></Text>
-        <Text style={styles.label}> Paid: <Text style={styles.value}>LKR {totalPayment}</Text></Text>
-        <Text style={styles.label}> Date: <Text style={styles.value}>{new Date(paymentTimestamp).toLocaleString()}</Text></Text>
-
-        <View style={styles.qrContainer}>
-          <Text style={styles.qrText}>🔲 Scan QR for Receipt</Text>
-          <QRCode value={qrValue} size={200} />
+    <LinearGradient colors={['#E8F5E9', '#ffffff']} style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* Success Header */}
+        <View style={styles.successHeader}>
+          <View style={styles.checkCircle}>
+            <Ionicons name="checkmark-done" size={50} color="#2E7D32" />
+          </View>
+          <Text style={styles.successTitle}>Booking Confirmed!</Text>
+          <Text style={styles.successSubtitle}>Your seat reservation is complete</Text>
         </View>
 
-      <Pressable style={styles.okButton} onPress={handleSaveReceipt}>
-  <Text style={styles.okButtonText}>SAVE RECEIPT</Text>
-</Pressable>
+        {/* Booking Details Card */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Booking Details</Text>
 
-      </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>Booking ID:</Text>
+            <Text style={styles.value}>{bookingId || 'Generating...'}</Text>
+          </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>Bus:</Text>
+            <Text style={styles.value}>{busNumber} - {busName}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>Passenger Name:</Text>
+            <Text style={styles.value}>{passengerName}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>Phone Number:</Text>
+            <Text style={styles.value}>{phoneNumber}</Text>
+          </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>From:</Text>
+            <Text style={styles.value}>{startLocation}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>To:</Text>
+            <Text style={styles.value}>{endLocation}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>Departure:</Text>
+            <Text style={styles.value}>{departureTime}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>Arrival:</Text>
+            <Text style={styles.value}>{arrivalTime}</Text>
+          </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>Seats Selected:</Text>
+            <Text style={styles.value}>{Array.isArray(selectedSeats) ? selectedSeats.join(', ') : selectedSeats}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>Total Amount:</Text>
+            <Text style={[styles.value, { color: '#2E7D32', fontWeight: '700', fontSize: 16 }]}>₹{totalPayment}</Text>
+          </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>Booked On:</Text>
+            <Text style={styles.value}>{new Date(paymentTimestamp).toLocaleString()}</Text>
+          </View>
+
+          {/* QR Code */}
+          <View style={styles.qrContainer}>
+            <Text style={styles.qrText}>Scan QR Code for Receipt</Text>
+            <QRCode value={qrValue} size={180} color="#2E7D32" backgroundColor="#fff" />
+          </View>
+        </View>
+
+        {/* Action Button */}
+        <Pressable style={styles.homeButton} onPress={handleSaveReceipt}>
+          <LinearGradient colors={['#2E7D32', '#43A047']} style={styles.buttonGradient}>
+            <Ionicons name="home-outline" size={20} color="#fff" style={{ marginRight: 8 }} />
+            <Text style={styles.homeButtonText}>Back to Home</Text>
+          </LinearGradient>
+        </Pressable>
+
+        <View style={styles.spacing} />
+      </ScrollView>
     </LinearGradient>
   );
 };
@@ -118,8 +220,11 @@ const SuccessScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  },
+  scrollContent: {
+    paddingHorizontal: 12,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   loadingContainer: {
     flex: 1,
@@ -127,55 +232,127 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  card: {
-    width: '90%',
-    backgroundColor: '#ffffff',
-    borderRadius: 20,
-    padding: 20,
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
+
+  // Success Header
+  successHeader: {
+    alignItems: 'center',
+    marginBottom: 24,
   },
-  title: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: 'green',
+  checkCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#E8F5E9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+    borderWidth: 3,
+    borderColor: '#2E7D32',
+  },
+  successTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#2E7D32',
+    marginBottom: 8,
+  },
+  successSubtitle: {
+    fontSize: 14,
+    color: '#666666',
+    fontWeight: '500',
+  },
+
+  // Card Styling
+  card: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    borderLeftWidth: 5,
+    borderLeftColor: '#2E7D32',
+    shadowColor: '#2E7D32',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#2E7D32',
+    marginBottom: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: '#E8F5E9',
+  },
+
+  // Detail Row
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
   },
   label: {
-    fontSize: 16,
-    marginBottom: 6,
-    color: '#333',
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666666',
+    flex: 1,
   },
   value: {
-    fontWeight: '600',
-    color: '#000',
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#2E7D32',
+    flex: 1,
+    textAlign: 'right',
   },
+  divider: {
+    height: 1,
+    backgroundColor: '#E8F5E9',
+    marginVertical: 12,
+  },
+
+  // QR Container
   qrContainer: {
-    marginTop: 25,
+    marginTop: 20,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E8F5E9',
     alignItems: 'center',
   },
   qrText: {
-    fontSize: 16,
-    marginBottom: 10,
-    color: '#666',
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2E7D32',
+    marginBottom: 16,
   },
-  okButton: {
-    marginTop: 30,
-    backgroundColor: 'black',
-    paddingVertical: 14,
-    borderRadius: 10,
+
+  // Home Button
+  homeButton: {
+    marginHorizontal: 0,
+    marginBottom: 16,
+    height: 56,
+    borderRadius: 14,
+    overflow: 'hidden',
+    shadowColor: '#2E7D32',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  buttonGradient: {
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
-    elevation: 3,
+    justifyContent: 'center',
   },
-  okButtonText: {
+  homeButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
     color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    letterSpacing: 1,
+    letterSpacing: 0.3,
+  },
+  spacing: {
+    height: 20,
   },
 });
 

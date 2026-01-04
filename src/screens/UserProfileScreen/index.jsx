@@ -82,7 +82,7 @@ const UserProfileScreen = () => {
 
   const goToBooking = () => {
     setActiveTab('Booking');
-    navigation.navigate('Receipt');
+    navigation.navigate('Destination');
   };
 
   const goToBusDetails = () => {

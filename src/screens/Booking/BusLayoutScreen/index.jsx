@@ -1,15 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Text, Alert } from 'react-native';
-import styles from './styles'; // Ensure you have the correct styles
+import { View, TouchableOpacity, Text, Alert, ScrollView } from 'react-native';
+import styles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
-import LinearGradient from 'react-native-linear-gradient';
+
+// Color constants for consistency
+const GREEN_PRIMARY = '#2E7D32';
+const GREEN_SECONDARY = '#43A047';
+const WHITE = '#fff';
 
 const BusLayoutScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { busId } = route.params; // Get busId from route parameters
+  const { 
+    busId,
+    busNumber,
+    busName,
+    departureTime,
+    arrivalTime,
+    price,
+    availableSeats,
+    totalSeats,
+    isAC,
+    busType,
+    startLocation,
+    endLocation
+  } = route.params;
 
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [seatData, setSeatData] = useState({});
@@ -77,8 +94,18 @@ const BusLayoutScreen = () => {
       .then(() => {
         Alert.alert('Success', 'Seats booked successfully!');
         navigation.navigate('SeatDetailsScreen', {
-          selectedSeats: selectedSeats, // Pass selected seats to the next screen
-          busId: busId, // Pass busId as well
+          selectedSeats: selectedSeats,
+          busId: busId,
+          busNumber: busNumber,
+          busName: busName,
+          departureTime: departureTime,
+          arrivalTime: arrivalTime,
+          price: price,
+          startLocation: startLocation,
+          endLocation: endLocation,
+          totalSeats: totalSeats,
+          isAC: isAC,
+          busType: busType,
         });
       })
       .catch((error) => {
@@ -98,11 +125,16 @@ const BusLayoutScreen = () => {
       disabled={seatData[seat] === 'booked'}
       onPress={() => toggleSeatSelection(seat)}
     >
-      <Text style={styles.seatText}>{seat}</Text>
+      <Text style={[
+        styles.seatText,
+        selectedSeats.includes(seat) && seatData[seat] !== 'booked' && { color: WHITE }
+      ]}>
+        {seat}
+      </Text>
     </TouchableOpacity>
   );
 
-  // Seat layout (adjust this as needed for your bus layout)
+  // Seat layout with bus rows
   const seatLayout = [
     ['1', '2', '', '3', '4'],
     ['5', '6', '', '7', '8'],
@@ -117,31 +149,83 @@ const BusLayoutScreen = () => {
     ['41', '42', '43', '44', '45'],
   ];
 
+  // Bus info
+  const busInfo = {
+    name: busName || 'Deluxe Coach',
+    number: busNumber || 'BUS-001',
+    totalSeats: totalSeats || 45,
+    bookedSeats: Object.values(seatData).filter(s => s === 'booked').length,
+    departureTime: departureTime || '10:00 AM',
+    arrivalTime: arrivalTime || '2:00 PM',
+    price: price || '2500',
+    isAC: isAC !== undefined ? isAC : true,
+    busType: busType || 'Standard',
+    startLocation: startLocation || 'Matara',
+    endLocation: endLocation || 'Colombo',
+  };
+
   return (
-    <LinearGradient
-      colors={['white', 'white','green']}
-      style={styles.container}
-    >
-    <View style={styles.container}>
-      <View style={styles.head}>
-        <TouchableOpacity style={styles.backArrowContainer} onPress={() => navigation.goBack()}>
-          <Ionicons name={'arrow-back-outline'} color={'black'} size={30} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Select your seat</Text>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <View style={styles.headerSection}>
+        <View style={styles.head}>
+          <TouchableOpacity style={styles.backArrowContainer} onPress={() => navigation.goBack()}>
+            <Ionicons name={'arrow-back-outline'} color={GREEN_PRIMARY} size={28} />
+          </TouchableOpacity>
+          <View style={styles.titleWrapper}>
+            <Text style={styles.title}>Select Your Seat</Text>
+            <Text style={styles.subtitle}>Choose your preferred seat for a comfortable journey</Text>
+          </View>
+        </View>
       </View>
 
-      <View style={styles.busInfoContainer}>
-        {busId ? (
-         <Text style={[styles.busIdText, { display: 'none' }]}>
-  Bus ID: {busId}
-</Text>
-
-        ) : (
-          <Text style={styles.busIdText}>Bus ID not available</Text>
-        )}
+      <View style={styles.busInfoCard}>
+        <View style={styles.busInfoContent}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.busName}>{busInfo.name}</Text>
+            <Text style={styles.busDetails}>{busInfo.number} • {busInfo.busType}</Text>
+            <Text style={styles.busDetails}>{busInfo.totalSeats} Total Seats • {busInfo.bookedSeats} Booked</Text>
+            
+            {/* Route Information */}
+            <View style={styles.routeInfo}>
+              <Text style={styles.routeText}>{busInfo.startLocation}</Text>
+              <Text style={styles.routeArrow}>→</Text>
+              <Text style={styles.routeText}>{busInfo.endLocation}</Text>
+            </View>
+            
+            {/* Detailed Bus Information Grid */}
+            <View style={styles.busDetailGrid}>
+              <View style={styles.detailItem}>
+                <Text style={styles.detailLabel}>Departure</Text>
+                <Text style={styles.detailValue}>{busInfo.departureTime}</Text>
+              </View>
+              <View style={styles.detailItem}>
+                <Text style={styles.detailLabel}>Arrival</Text>
+                <Text style={styles.detailValue}>{busInfo.arrivalTime}</Text>
+              </View>
+              <View style={styles.detailItem}>
+                <Text style={styles.detailLabel}>Price</Text>
+                <Text style={styles.detailValue}>Rs {busInfo.price}</Text>
+              </View>
+              <View style={styles.detailItem}>
+                <Text style={styles.detailLabel}>Type</Text>
+                <Text style={styles.detailValue}>{busInfo.isAC ? 'AC' : 'Non-AC'}</Text>
+              </View>
+            </View>
+          </View>
+          
+          <View style={styles.seatsAvailableBadge}>
+            <Text style={styles.seatsAvailableText}>{busInfo.totalSeats - busInfo.bookedSeats}</Text>
+            <Text style={styles.seatsAvailableLabel}>Available</Text>
+          </View>
+        </View>
       </View>
 
+    
       <View style={styles.seatLayout}>
+        <View style={styles.seatLayoutHeader}>
+          <Ionicons name="car-outline" color={GREEN_PRIMARY} size={20} />
+          <Text style={styles.seatLayoutTitle}>Bus Interior Layout</Text>
+        </View>
         {seatLayout.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.row}>
             {row.map((seat, seatIndex) =>
@@ -149,20 +233,53 @@ const BusLayoutScreen = () => {
             )}
           </View>
         ))}
+        <View style={styles.directionIndicator}>
+          <View style={styles.directionArrow}>
+            <Ionicons name="arrow-up-outline" color={WHITE} size={18} />
+          </View>
+          <Text style={styles.directionText}>Front of Bus</Text>
+        </View>
       </View>
 
-      <View style={styles.seatAvailable}>
-        <Text style={styles.box1} />
-        <Text style={styles.available}>Available</Text>
-        <Text style={styles.box2} />
-        <Text style={styles.unavailable}>Unavailable</Text>
+      <View style={styles.legendSection}>
+        <View style={styles.legendItem}>
+          <View style={styles.legendBox1} />
+          <Text style={styles.legendText}>Available</Text>
+        </View>
+        <View style={styles.legendItem}>
+          <View style={styles.legendBox2} />
+          <Text style={styles.legendText}>Unavailable</Text>
+        </View>
+        <View style={styles.legendItem}>
+          <View style={styles.legendBox3} />
+          <Text style={styles.legendText}>Selected</Text>
+        </View>
       </View>
 
-      <TouchableOpacity style={styles.continueButton} onPress={confirmSeatSelection}>
-        <Text style={styles.continueText}>Confirm Selection</Text>
+      {selectedSeats.length > 0 && (
+        <View style={styles.selectedSeatsCard}>
+          <Text style={styles.selectedSeatsTitle}>Selected Seats</Text>
+          <View style={styles.selectedSeatsList}>
+            {selectedSeats.map((seat) => (
+              <View key={seat} style={styles.selectedSeatBadge}>
+                <Text style={styles.selectedSeatText}>{seat}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
+
+      <TouchableOpacity 
+        style={[styles.continueButton, selectedSeats.length === 0 && styles.disabledButton]} 
+        onPress={confirmSeatSelection}
+        disabled={selectedSeats.length === 0}
+      >
+        <Text style={styles.continueText}>
+          {selectedSeats.length === 0 ? 'Select Seats' : `Confirm ${selectedSeats.length} Seat${selectedSeats.length > 1 ? 's' : ''}`}
+        </Text>
+        <Ionicons name="arrow-forward-outline" color={WHITE} size={22} style={styles.buttonIcon} />
       </TouchableOpacity>
-    </View>
-    </LinearGradient>
+    </ScrollView>
   );
 };
 

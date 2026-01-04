@@ -7,14 +7,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const BookingReceipt = () => {
   const route = useRoute();
   const {
-    busId,
-    fromLocation,
-    toLocation,
-    totalPayment,
-    paymentTimestamp,
-    username,
-    email,
-  } = route.params;
+    busId = 'N/A',
+    fromLocation = 'N/A',
+    toLocation = 'N/A',
+    totalPayment = '0',
+    paymentTimestamp = new Date().toISOString(),
+    username = 'Guest',
+    email = 'N/A',
+  } = route.params || {};
 
   const qrValue = JSON.stringify({
     busId,
