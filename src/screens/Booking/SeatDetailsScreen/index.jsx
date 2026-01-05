@@ -150,9 +150,20 @@ const SeatDetailsScreen = () => {
         status: 'confirmed',
       };
 
+      // First, mark seats as "booked" in Firebase
+      const seatUpdates = {};
+      selectedSeats.forEach((seat) => {
+        seatUpdates[`/buses/${busId}/seats/${seat}`] = 'booked';
+      });
+
+      // Update seats to booked status
       database()
-        .ref(`/bookings/${busId}`)
-        .push(bookingData)
+        .ref()
+        .update(seatUpdates)
+        .then(() => {
+          // Save booking data
+          return database().ref(`/bookings/${busId}`).push(bookingData);
+        })
         .then(() => {
           Alert.alert('Success', 'Booking confirmed successfully!');
           navigation.navigate('SuccessScreen', {

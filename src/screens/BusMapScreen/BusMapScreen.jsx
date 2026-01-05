@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, Component } from 'react';
 import { 
   View, 
   Text, 
@@ -13,7 +13,7 @@ import {
   PermissionsAndroid
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import Geolocation from 'react-native-geolocation-service';
+// import Geolocation from 'react-native-geolocation-service'; // Disabled - causing crash
 import MapViewDirections from 'react-native-maps-directions';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -25,13 +25,58 @@ import database from '@react-native-firebase/database';
 const { width, height } = Dimensions.get('window');
 const GOOGLE_MAPS_APIKEY = 'AIzaSyCIK1Z1X8H2GId9qNBVa4ilaccNG-cXuXE';
 
+// Error Boundary Component
+class MapErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.log('Map Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', padding: 20 }}>
+          <MaterialCommunityIcons name="map-marker-off" size={80} color="#F44336" />
+          <Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 20, color: '#333' }}>Map Error</Text>
+          <Text style={{ fontSize: 14, color: '#666', textAlign: 'center', marginTop: 10 }}>
+            {this.state.error?.message || 'Unable to load map'}
+          </Text>
+          <TouchableOpacity 
+            style={{ marginTop: 30, backgroundColor: '#4CAF50', paddingHorizontal: 40, paddingVertical: 14, borderRadius: 25 }}
+            onPress={() => this.props.navigation?.goBack()}
+          >
+            <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 const BusMapScreen = ({ route }) => {
   const navigation = useNavigation();
   const mapRef = useRef(null);
   
-  // Get params with defaults
-  const busData = route.params?.busData || {};
-  const initialBusLocation = route.params?.currentLocation || null;
+  // Debug log
+  console.log('BusMapScreen mounted, route:', route);
+  console.log('BusMapScreen params:', route?.params);
+  
+  // Get params with defaults - handle undefined route.params
+  const params = route?.params || {};
+  const busData = params.busData || {};
+  const initialBusLocation = params.currentLocation || null;
+  
+  console.log('BusMapScreen busData:', busData);
   
   const [userLocation, setUserLocation] = useState(null);
   const [busLocation, setBusLocation] = useState(initialBusLocation);
@@ -39,6 +84,10 @@ const BusMapScreen = ({ route }) => {
   const [distance, setDistance] = useState(null);
   const [duration, setDuration] = useState(null);
   const [error, setError] = useState(null);
+  const [driverInfo, setDriverInfo] = useState(null);
+  const [isDriverOnline, setIsDriverOnline] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(null);
+  const [mapReady, setMapReady] = useState(false);
   
   // Animation for bus pulse
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -105,59 +154,46 @@ const BusMapScreen = ({ route }) => {
     return true;
   };
 
-  // Get user location
+  // Get user location - using default location only (Geolocation disabled)
   useEffect(() => {
-    const getLocation = async () => {
-      const hasPermission = await requestLocationPermission();
-      if (!hasPermission) {
-        setError('Location permission denied');
-        setLoading(false);
-        return;
-      }
-
-      Geolocation.getCurrentPosition(
-        (position) => {
-          const userPos = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          };
-          setUserLocation(userPos);
-          setLoading(false);
-          
-          // Fit map to show both markers
-          if (busLocation && mapRef.current) {
-            setTimeout(() => {
-              mapRef.current.fitToCoordinates([userPos, busLocation], {
-                edgePadding: { top: 100, right: 50, bottom: 250, left: 50 },
-                animated: true,
-              });
-            }, 500);
-          }
-        },
-        (err) => {
-          console.error('Error getting user location:', err);
-          setError('Could not get your location');
-          setLoading(false);
-        },
-        { enableHighAccuracy: true, timeout: 20000, maximumAge: 10000 }
-      );
-    };
-
-    getLocation();
+    // Use default Colombo location - Geolocation library causing crashes
+    setUserLocation({
+      latitude: 6.9271,
+      longitude: 79.8612,
+    });
+    setLoading(false);
   }, []);
 
-  // Listen for real-time bus location updates
+  // Listen for real-time bus location updates from liveLocation node
   useEffect(() => {
-    if (busData.busId) {
-      const busRef = database().ref(`/buses/${busData.busId}/currentLocation`);
+    if (busData?.busId) {
+      const busRef = database().ref(`/buses/${busData.busId}/liveLocation`);
       
       const unsubscribe = busRef.on('value', (snapshot) => {
-        const location = snapshot.val();
-        if (location && location.latitude && location.longitude) {
-          setBusLocation({
-            latitude: location.latitude,
-            longitude: location.longitude,
-          });
+        const liveData = snapshot.val();
+        if (liveData) {
+          // Check if driver is tracking
+          if (liveData.isTracking && liveData.latitude && liveData.longitude) {
+            setBusLocation({
+              latitude: liveData.latitude,
+              longitude: liveData.longitude,
+            });
+            setIsDriverOnline(true);
+            setLastUpdated(liveData.lastUpdated || null);
+            
+            // Set driver info
+            if (liveData.driverName) {
+              setDriverInfo({
+                name: liveData.driverName,
+                email: liveData.driverEmail,
+                id: liveData.driverId,
+              });
+            }
+          } else {
+            setIsDriverOnline(false);
+          }
+        } else {
+          setIsDriverOnline(false);
         }
       });
 
@@ -247,7 +283,7 @@ const BusMapScreen = ({ route }) => {
       {/* Map */}
       <MapView
         ref={mapRef}
-        provider={PROVIDER_GOOGLE}
+        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         style={styles.map}
         initialRegion={{
           latitude: userLocation?.latitude || 6.9271,
@@ -255,11 +291,15 @@ const BusMapScreen = ({ route }) => {
           latitudeDelta: 0.05,
           longitudeDelta: 0.05,
         }}
-        showsUserLocation={false}
-        showsMyLocationButton={false}
+        showsUserLocation={true}
+        showsMyLocationButton={true}
         showsCompass={false}
+        onMapReady={() => {
+          console.log('Map is ready');
+          setMapReady(true);
+        }}
       >
-        {/* User Marker */}
+        {/* User Marker - hidden since showsUserLocation is true */}
         {userLocation && (
           <Marker coordinate={userLocation} title="You are here" anchor={{ x: 0.5, y: 0.5 }}>
             <View style={styles.userMarkerContainer}>
@@ -271,10 +311,10 @@ const BusMapScreen = ({ route }) => {
         )}
 
         {/* Bus Marker */}
-        {busLocation && (
+        {busLocation && busLocation.latitude && busLocation.longitude && (
           <Marker 
             coordinate={busLocation} 
-            title={busData.busNumber || 'Bus'} 
+            title={busData?.busNumber || 'Bus'} 
             anchor={{ x: 0.5, y: 0.5 }}
           >
             <View style={styles.busMarkerContainer}>
@@ -287,7 +327,7 @@ const BusMapScreen = ({ route }) => {
         )}
 
         {/* Directions Line */}
-        {userLocation && busLocation && (
+        {userLocation && busLocation && busLocation.latitude && busLocation.longitude && (
           <MapViewDirections
             origin={userLocation}
             destination={busLocation}
@@ -307,7 +347,7 @@ const BusMapScreen = ({ route }) => {
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Track Bus</Text>
-          {busData.busNumber && (
+          {busData?.busNumber && (
             <Text style={styles.headerSubtitle}>{busData.busNumber}</Text>
           )}
         </View>
@@ -340,11 +380,18 @@ const BusMapScreen = ({ route }) => {
               <FontAwesome5 name="bus" size={24} color="#4CAF50" />
             </View>
             <View style={styles.busDetails}>
-              <Text style={styles.busNumberText}>{busData.busNumber || 'Bus'}</Text>
+              <Text style={styles.busNumberText}>{busData?.busNumber || 'Bus'}</Text>
               <View style={styles.busStatusRow}>
-                <View style={styles.statusDot} />
-                <Text style={styles.statusText}>Live Tracking</Text>
+                <View style={[styles.statusDot, { backgroundColor: isDriverOnline ? '#4CAF50' : '#FF9800' }]} />
+                <Text style={styles.statusText}>
+                  {isDriverOnline ? 'Live Tracking' : 'Driver Offline'}
+                </Text>
               </View>
+              {lastUpdated && isDriverOnline && (
+                <Text style={styles.lastUpdatedText}>
+                  Updated: {new Date(lastUpdated).toLocaleTimeString()}
+                </Text>
+              )}
             </View>
             {distance && duration && (
               <View style={styles.etaContainer}>
@@ -370,7 +417,7 @@ const BusMapScreen = ({ route }) => {
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <MaterialCommunityIcons name="bus-clock" size={24} color="#2196F3" />
-              <Text style={styles.statValue}>{busData.departureTime || '--'}</Text>
+              <Text style={styles.statValue}>{busData?.departureTime || '--'}</Text>
               <Text style={styles.statLabel}>Departure</Text>
             </View>
           </View>
@@ -624,6 +671,11 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
     fontWeight: '500',
   },
+  lastUpdatedText: {
+    fontSize: 11,
+    color: '#888',
+    marginTop: 2,
+  },
   etaContainer: {
     alignItems: 'flex-end',
   },
@@ -684,4 +736,14 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BusMapScreen;
+// Wrap with Error Boundary
+const BusMapScreenWithErrorBoundary = (props) => {
+  const navigation = useNavigation();
+  return (
+    <MapErrorBoundary navigation={navigation}>
+      <BusMapScreen {...props} />
+    </MapErrorBoundary>
+  );
+};
+
+export default BusMapScreenWithErrorBoundary;

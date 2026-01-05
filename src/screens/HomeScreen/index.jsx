@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, TouchableOpacity, Pressable, ScrollView, StatusBar, Animated, Easing, Modal, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, Pressable, ScrollView, StatusBar, Animated, Easing, Modal, Dimensions, Alert } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -112,10 +112,23 @@ const HomeScreen = () => {
                 new Date(b.paymentTimestamp) - new Date(a.paymentTimestamp)
               );
               if (bookingsList.length > 0) {
-                setLatestBooking(bookingsList[0]);
+                const booking = bookingsList[0];
+                
+                // Fetch bus time from buses node
+                if (booking.busId) {
+                  const busSnapshot = await database()
+                    .ref(`/buses/${booking.busId}`)
+                    .once('value');
+                  const busData = busSnapshot.val();
+                  if (busData && busData.time) {
+                    booking.busTime = busData.time;
+                  }
+                }
+                
+                setLatestBooking(booking);
                 
                 // Check if booking is for today (active booking)
-                const bookingDate = new Date(bookingsList[0].paymentTimestamp);
+                const bookingDate = new Date(booking.paymentTimestamp);
                 const today = new Date();
                 const isToday = bookingDate.toDateString() === today.toDateString();
                 setHasActiveBooking(isToday);
@@ -163,16 +176,28 @@ const HomeScreen = () => {
       navigation.navigate('BusMapScreen', {
         busData: {
           busId: latestBooking.busId,
-          busNumber: latestBooking.busNumber,
-          departureTime: latestBooking.departureTime,
-          startLocation: latestBooking.startLocation,
-          endLocation: latestBooking.endLocation,
+          busNumber: latestBooking.busNumber || 'Bus',
+          departureTime: latestBooking.departureTime || '',
+          startLocation: latestBooking.startLocation || '',
+          endLocation: latestBooking.endLocation || '',
         },
         currentLocation: null, // Will be fetched from Firebase in BusMapScreen
       });
+    } else if (latestBooking && !latestBooking.busId) {
+      Alert.alert(
+        'Tracking Unavailable',
+        'Bus ID not found for this booking. Please try booking again.',
+        [{ text: 'OK' }]
+      );
     } else {
-      // If no active booking, go to booking screen
-      navigation.navigate('Destination');
+      Alert.alert(
+        'No Active Booking',
+        'You don\'t have any active bookings to track. Would you like to book a bus?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Book Now', onPress: () => navigation.navigate('Destination') }
+        ]
+      );
     }
   };
 
@@ -235,7 +260,7 @@ const HomeScreen = () => {
 
         {/* Map Section */}
         <View style={styles.mapContainer}>
-          <Text style={styles.sectionTitle}>Nearby Buses</Text>
+          <Text style={styles.sectionTitle}>Easy to Find Your Live Location</Text>
           <View style={styles.mapWrapper}>
             <MapView
               provider={PROVIDER_GOOGLE}
@@ -285,7 +310,7 @@ const HomeScreen = () => {
           <Text style={styles.sectionTitle}>Why Choose Us?</Text>
           <View style={styles.featuresList}>
             {[
-              { icon: 'shield-check', title: 'Safe Travel', desc: 'Your safety is our priority' },
+              { icon: 'shield-check', title: 'Real Time Trcking', desc: 'Your safety is our priority' },
               { icon: 'clock-fast', title: 'On Time', desc: 'Always punctual service' },
               { icon: 'wallet', title: 'Best Price', desc: 'Affordable fares' },
             ].map((feature, index) => (
@@ -419,7 +444,9 @@ const HomeScreen = () => {
                     </View>
                     <View style={styles.modalDetailTextContainer}>
                       <Text style={styles.modalDetailLabel}>Departure</Text>
-                      <Text style={styles.modalDetailValue}>{latestBooking.departureTime}</Text>
+                      <Text style={styles.modalDetailValue}>
+                        {latestBooking.busTime || latestBooking.departureTime || 'N/A'}
+                      </Text>
                     </View>
                   </View>
                 </View>

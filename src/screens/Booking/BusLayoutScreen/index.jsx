@@ -124,53 +124,29 @@ const BusLayoutScreen = () => {
     );
   };
 
-  // Confirm seat selection and update Firebase
+  // Confirm seat selection - Navigate to payment screen (seats will be booked after payment)
   const confirmSeatSelection = () => {
     if (selectedSeats.length === 0) {
       Alert.alert('No Seats Selected', 'Please select at least one seat.');
       return;
     }
 
-    // Update the seats to "booked" under `/buses/{busId}/seats`
-    const updates = {};
-    selectedSeats.forEach((seat) => {
-      updates[`/buses/${busId}/seats/${seat}`] = 'booked';
+    // Navigate to SeatDetailsScreen for payment
+    // Seats will be marked as "booked" only after successful payment
+    navigation.navigate('SeatDetailsScreen', {
+      selectedSeats: selectedSeats,
+      busId: busId,
+      busNumber: busNumber,
+      busName: busName,
+      departureTime: departureTime,
+      arrivalTime: arrivalTime,
+      price: price,
+      startLocation: startLocation,
+      endLocation: endLocation,
+      totalSeats: totalSeats,
+      isAC: isAC,
+      busType: busType,
     });
-
-    // Save the booked seats under a `bookedSeats` node with the busId
-    const bookedSeatsRef = database().ref(`/bookedSeats/${busId}`);
-    const newBookings = selectedSeats.reduce((acc, seat) => {
-      acc[seat] = 'booked';
-      return acc;
-    }, {});
-
-    // Perform the updates
-    database()
-      .ref()
-      .update(updates)
-      .then(() => {
-        return bookedSeatsRef.update(newBookings);
-      })
-      .then(() => {
-        Alert.alert('Success', 'Seats booked successfully!');
-        navigation.navigate('SeatDetailsScreen', {
-          selectedSeats: selectedSeats,
-          busId: busId,
-          busNumber: busNumber,
-          busName: busName,
-          departureTime: departureTime,
-          arrivalTime: arrivalTime,
-          price: price,
-          startLocation: startLocation,
-          endLocation: endLocation,
-          totalSeats: totalSeats,
-          isAC: isAC,
-          busType: busType,
-        });
-      })
-      .catch((error) => {
-        Alert.alert('Error', `Failed to book seats: ${error.message}`);
-      });
   };
 
   // Render a single seat with animation

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useCallback } from 'react';
-import { View, Text, TouchableOpacity, Animated, Easing, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Animated, Easing, StyleSheet, Alert } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -119,15 +119,28 @@ const BottomNavBar = ({ activeTab = 'Home' }) => {
       navigation.navigate('BusMapScreen', {
         busData: {
           busId: latestBooking.busId,
-          busNumber: latestBooking.busNumber,
-          departureTime: latestBooking.departureTime,
-          startLocation: latestBooking.startLocation,
-          endLocation: latestBooking.endLocation,
+          busNumber: latestBooking.busNumber || 'Bus',
+          departureTime: latestBooking.departureTime || '',
+          startLocation: latestBooking.startLocation || '',
+          endLocation: latestBooking.endLocation || '',
         },
         currentLocation: null,
       });
+    } else if (latestBooking && !latestBooking.busId) {
+      Alert.alert(
+        'Tracking Unavailable',
+        'Bus ID not found for this booking. Please try booking again.',
+        [{ text: 'OK' }]
+      );
     } else {
-      navigation.navigate('Destination');
+      Alert.alert(
+        'No Active Booking',
+        'You don\'t have any active bookings to track. Would you like to book a bus?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Book Now', onPress: () => navigation.navigate('Destination') }
+        ]
+      );
     }
   };
 
