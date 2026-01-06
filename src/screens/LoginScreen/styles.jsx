@@ -73,7 +73,7 @@ loginButton:{
     justifyContent:'center',
     marginTop:25,
     marginHorizontal: 10,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#1B5E20',
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
