@@ -245,7 +245,7 @@ const UserProfileScreen = () => {
         </View>
 
         <View style={styles.actionsSection}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <Text style={styles.sectionTitle}>Settings</Text>
           
           <TouchableOpacity style={styles.actionCard}>
             <View style={styles.actionIcon}>

@@ -45,7 +45,7 @@ const WelcomeScreen = () => {
         <View style={styles.contentContainer}>
           <View style={styles.welcomeTextContainer}>
             <Text style={styles.welcomeTitle}>Welcome to</Text>
-            <Text style={styles.appName}>Highway Bus 🚌</Text>
+            <Text style={styles.appName}>BusLanka 🚌</Text>
             <Text style={styles.tagline}>Your journey begins here</Text>
             
             {/* Features */}

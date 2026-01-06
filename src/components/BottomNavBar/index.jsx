@@ -192,7 +192,7 @@ const BottomNavBar = ({ activeTab = 'Home' }) => {
             ]}
           >
             <LinearGradient
-              colors={hasActiveBooking ? ['#FF9800', '#F57C00'] : ['#9E9E9E', '#757575']}
+              colors={hasActiveBooking ? ['#17b21aff', '#25af23ff'] : ['#9E9E9E', '#757575']}
               style={styles.trackButtonGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     height: 56,
     borderRadius: 28,
     borderWidth: 2,
-    borderColor: '#FF9800',
+    borderColor: '#3bc929ff',
     backgroundColor: 'transparent',
   },
   trackButtonInner: {
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 26,
     overflow: 'hidden',
-    shadowColor: '#FF9800',
+    shadowColor: '#1dbe18ff',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 8,
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#b60000ff',
+    backgroundColor: '#db1d1dff',
     borderWidth: 2,
     borderColor: '#fff',
   },
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   trackNavTextActive: {
-    color: '#FF9800',
+    color: '#41a314ff',
     fontWeight: '600',
   },
 });

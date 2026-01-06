@@ -260,7 +260,7 @@ const HomeScreen = () => {
 
         {/* Map Section */}
         <View style={styles.mapContainer}>
-          <Text style={styles.sectionTitle}>Easy to Find Your Live Location</Text>
+          <Text style={styles.sectionTitle}>Easy to Find Your Location</Text>
           <View style={styles.mapWrapper}>
             <MapView
               provider={PROVIDER_GOOGLE}
