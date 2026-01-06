@@ -19,17 +19,23 @@ welcomeMsg:{
     margin:15,
     paddingTop:30,
     marginBottom: 15,
+    alignItems:'center',
+    marginHorizontal: 10,
 },
 welcomeText:{
     fontSize:32,
     fontWeight:'bold',
     color: COLORS.primary,
     letterSpacing: 0.5,
+    alignItems:'center',
+    justifyContent:'center',
 },
     p:{
         fontSize:16,
         color: COLORS.text,
         marginTop: 8,
+        alignItems:'center',
+        justifyContent:'center',
     },
 tiImg:{
     flexDirection:'row',

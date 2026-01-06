@@ -12,8 +12,6 @@ import styles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -28,138 +26,114 @@ const UserProfileScreen = () => {
   const navigation = useNavigation();
   const [userData, setUserData] = useState({});
   const [imageUri, setImageUri] = useState(null);
-  const [activeTab, setActiveTab] = useState('Profile');
+  
+  // Current User UID ලබා ගැනීම
+  const user = auth().currentUser;
+  const uid = user ? user.uid : null;
 
-  const uid = auth().currentUser?.uid;
-
-  // Load profile image from device cache first, then from Firebase
   useEffect(() => {
     if (uid) {
+      // 1. මුලින්ම Cache එකේ ඇති පරණ Image එක Load කිරීම
       loadProfileImageFromCache();
       
+      // 2. Real-time Database එකට සම්බන්ධ වීම
       const userRef = database().ref(`/passenger/${uid}`);
-      userRef.on('value', snapshot => {
+      
+      const onValueChange = userRef.on('value', snapshot => {
         if (snapshot.exists()) {
           const data = snapshot.val();
           console.log('User data loaded:', data);
           setUserData(data);
           
-          // If Firebase has a newer image, save it to cache
-          if (data.profileImage && data.profileImage !== imageUri) {
-            saveProfileImageToCache(data.profileImage);
+          // Firebase එකේ image එකක් තිබේ නම් එය පෙන්වීම සහ Cache කිරීම
+          if (data.profileImage) {
             setImageUri(data.profileImage);
+            saveProfileImageToCache(data.profileImage);
           }
         } else {
-          console.log('No user data found');
+          console.log('No user data found for UID:', uid);
         }
       });
       
-      return () => userRef.off();
+      // Screen එකෙන් ඉවත් වන විට listener එක නතර කිරීම
+      return () => userRef.off('value', onValueChange);
     }
   }, [uid]);
 
-  // Load profile image from device cache
   const loadProfileImageFromCache = async () => {
     try {
       const cachedImageUrl = await AsyncStorage.getItem(`profileImage_${uid}`);
       if (cachedImageUrl) {
-        console.log('Loaded profile image from device cache');
         setImageUri(cachedImageUrl);
       }
     } catch (error) {
-      console.error('Error loading cached profile image:', error);
+      console.error('Cache load error:', error);
     }
   };
 
-  // Save profile image URL to device cache
   const saveProfileImageToCache = async (imageUrl) => {
     try {
       await AsyncStorage.setItem(`profileImage_${uid}`, imageUrl);
-      console.log('Profile image URL saved to device cache');
     } catch (error) {
-      console.error('Error saving profile image to cache:', error);
+      console.error('Cache save error:', error);
     }
   };
 
   const handleImagePick = async () => {
+    // UID එක නැවත පරීක්ෂා කිරීම (undefined ගැටලුව මගහරවා ගැනීමට)
+    if (!uid) {
+      Toast.show({ type: 'error', text1: 'Error', text2: 'User not authenticated' });
+      return;
+    }
+
     try {
       const result = await launchImageLibrary({ 
         mediaType: 'photo',
-        quality: 0.8,
+        quality: 0.7, // Size එක අඩු කිරීමට
       });
 
       if (result?.assets && result.assets.length > 0) {
-        const asset = result.assets[0];
-        const { uri } = asset;
+        const { uri } = result.assets[0];
 
-        console.log('Image selected from:', uri);
-
-        // Show loading
         Toast.show({
           type: 'info',
           text1: 'Uploading...',
-          text2: 'Please wait while we upload your photo',
-          duration: 3000,
+          text2: 'Updating your profile picture',
         });
 
-        // Upload to Supabase Storage
+        // 1. Supabase එකට Upload කිරීම
         const downloadURL = await uploadProfileImageToSupabase(uid, uri);
-        console.log('Image uploaded to Supabase:', downloadURL);
 
-        // Update user data in Firebase Realtime Database
+        // 2. Firebase එකේ පවතින User node එකටම Update කිරීම
+        // මෙහිදී image එක passenger/${uid} යටතටම යන බව සහතික කරයි
         await database().ref(`/passenger/${uid}`).update({ 
           profileImage: downloadURL,
           profileImageUpdatedAt: new Date().toISOString(),
         });
 
-        // Save to device cache
-        await saveProfileImageToCache(downloadURL);
-
-        // Update local state
         setImageUri(downloadURL);
+        await saveProfileImageToCache(downloadURL);
 
         Toast.show({
           type: 'success',
           text1: 'Success!',
-          text2: 'Profile picture updated successfully!',
-          duration: 2000,
+          text2: 'Profile picture updated!',
         });
       }
     } catch (error) {
-      console.error('Error uploading image:', error);
-      console.error('Error message:', error.message);
+      console.error('Upload error:', error);
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: 'Failed to upload image: ' + error.message,
-        duration: 3000,
+        text1: 'Upload Failed',
+        text2: error.message,
       });
     }
   };
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('isLoggedIn');
-    await AsyncStorage.removeItem('userEmail');
+    await AsyncStorage.clear();
     await auth().signOut();
     navigation.replace('Welcome');
-  };
-
-  const arrowLogin = () => {
-    navigation.navigate('Home');
-  };
-
-  const handleEditProfile = () => {
-    navigation.navigate('EditProfile');
-  };
-
-  const goToBooking = () => {
-    setActiveTab('Booking');
-    navigation.navigate('Destination');
-  };
-
-  const goToBusDetails = () => {
-    setActiveTab('BusDetails');
-    navigation.navigate('Bus Details');
   };
 
   return (
@@ -173,11 +147,11 @@ const UserProfileScreen = () => {
         end={{ x: 1, y: 1 }}
       >
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={arrowLogin}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={26} color="white" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>My Profile</Text>
-          <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
+          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('EditProfile')}>
             <MaterialIcons name="edit" size={24} color="white" />
           </TouchableOpacity>
         </View>
@@ -194,8 +168,8 @@ const UserProfileScreen = () => {
               <MaterialCommunityIcons name="camera" size={20} color="white" />
             </TouchableOpacity>
           </View>
-          <Text style={styles.userName}>{userData.username || 'User'}</Text>
-          <Text style={styles.userEmail}>{userData.email || 'email@example.com'}</Text>
+          <Text style={styles.userName}>{userData.username || 'Loading...'}</Text>
+          <Text style={styles.userEmail}>{userData.email || 'Please wait'}</Text>
         </View>
       </LinearGradient>
 
@@ -208,6 +182,7 @@ const UserProfileScreen = () => {
           <Text style={styles.sectionTitle}>Account Information</Text>
           
           <View style={styles.infoCard}>
+            {/* Username Row */}
             <View style={styles.infoRow}>
               <View style={styles.iconContainer}>
                 <MaterialCommunityIcons name="account" size={22} color="#4CAF50" />
@@ -220,6 +195,7 @@ const UserProfileScreen = () => {
 
             <View style={styles.divider} />
 
+            {/* Mobile Row */}
             <View style={styles.infoRow}>
               <View style={styles.iconContainer}>
                 <MaterialCommunityIcons name="phone" size={22} color="#4CAF50" />
@@ -232,6 +208,7 @@ const UserProfileScreen = () => {
 
             <View style={styles.divider} />
 
+            {/* Email Row */}
             <View style={styles.infoRow}>
               <View style={styles.iconContainer}>
                 <MaterialCommunityIcons name="email" size={22} color="#4CAF50" />
@@ -244,10 +221,11 @@ const UserProfileScreen = () => {
           </View>
         </View>
 
+        {/* Settings / Actions */}
         <View style={styles.actionsSection}>
           <Text style={styles.sectionTitle}>Settings</Text>
           
-          <TouchableOpacity style={styles.actionCard}>
+          <TouchableOpacity style={styles.actionCard} onPress={() => navigation.navigate('Destination')}>
             <View style={styles.actionIcon}>
               <MaterialCommunityIcons name="ticket" size={24} color="#4CAF50" />
             </View>
@@ -258,40 +236,16 @@ const UserProfileScreen = () => {
             <Ionicons name="chevron-forward" size={22} color="#999" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionCard}>
-            <View style={styles.actionIcon}>
-              <MaterialCommunityIcons name="heart" size={24} color="#4CAF50" />
-            </View>
-            <View style={styles.actionTextContainer}>
-              <Text style={styles.actionTitle}>Saved Routes</Text>
-              <Text style={styles.actionSubtitle}>Your favorite routes</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={22} color="#999" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.actionCard}>
-            <View style={styles.actionIcon}>
-              <MaterialCommunityIcons name="cog" size={24} color="#4CAF50" />
-            </View>
-            <View style={styles.actionTextContainer}>
-              <Text style={styles.actionTitle}>Settings</Text>
-              <Text style={styles.actionSubtitle}>App preferences</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={22} color="#999" />
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <MaterialCommunityIcons name="logout" size={22} color="white" />
+            <Text style={styles.logoutText}>Log Out</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <MaterialCommunityIcons name="logout" size={22} color="white" />
-          <Text style={styles.logoutText}>Log Out</Text>
-        </TouchableOpacity>
         
-        <View style={{ height: 80 }} />
+        <View style={{ height: 100 }} />
       </ScrollView>
 
-      {/* Bottom Navigation */}
       <BottomNavBar activeTab="Profile" />
-
       <Toast />
     </View>
   );

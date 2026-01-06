@@ -19,6 +19,7 @@ welcomeMsg:{
     margin:15,
     paddingTop:40,
     marginBottom: 20,
+    alignItems:'center',
 },
 welcomeText:{
     fontSize:32,
