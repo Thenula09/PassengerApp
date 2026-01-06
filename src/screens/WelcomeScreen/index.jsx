@@ -24,7 +24,7 @@ const WelcomeScreen = () => {
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       
       <LinearGradient
-        colors={['#1B5E20', '#2E7D32', '#388E3C', '#4CAF50']}
+         colors={['#E8F5E9', '#C8E6C9', '#81C784']}
         style={styles.gradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -81,19 +81,19 @@ const WelcomeScreen = () => {
         <View style={styles.buttonsContainer}>
           <TouchableOpacity onPress={handleLogin}>
             <LinearGradient
-              colors={['#FFFFFF', '#F5F5F5']}
+              colors={['#1B5E20', '#227628ff']}
               style={styles.loginButton}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
             >
               <Text style={styles.loginText}>Sign In</Text>
-              <Ionicons name="arrow-forward" size={22} color="#1B5E20" />
+              <Ionicons name="arrow-forward" size={22} color="#ffffffff" />
             </LinearGradient>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.signUpButton} onPress={handleRegister}>
             <Text style={styles.signUpText}>Create Account</Text>
-            <MaterialCommunityIcons name="account-plus" size={22} color="white" />
+            <MaterialCommunityIcons name="account-plus" size={22} color="#1B5E20" />
           </TouchableOpacity>
 
           <View style={styles.guestContainer}>

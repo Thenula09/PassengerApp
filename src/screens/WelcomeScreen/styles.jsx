@@ -79,20 +79,20 @@ const styles = StyleSheet.create({
   },
   welcomeTitle: {
     fontSize: 18,
-    color: 'rgba(255,255,255,0.9)',
+    color: 'rgba(0, 0, 0, 0.9)',
     fontWeight: '500',
     marginBottom: 8,
   },
   appName: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#1B5E20',
     marginBottom: 8,
     textAlign: 'center',
   },
   tagline: {
     fontSize: 16,
-    color: 'rgba(255,255,255,0.85)',
+    color: 'rgba(0, 0, 0, 0.85)',
     marginBottom: 30,
   },
 
@@ -118,14 +118,14 @@ const styles = StyleSheet.create({
   },
   featureText: {
     fontSize: 15,
-    color: 'white',
+    color: '#1B5E20',
     fontWeight: '500',
   },
 
   // Image
   imageContainer: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 2,
   },
   welcomeImage: {
     width: width * 0.85,
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   loginText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1B5E20',
+    color: '#ffffffff',
   },
   signUpButton: {
     flexDirection: 'row',
@@ -165,13 +165,13 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     backgroundColor: 'rgba(255,255,255,0.2)',
     borderWidth: 2,
-    borderColor: 'white',
+    borderColor: '#1B5E20',
     gap: 10,
   },
   signUpText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#1B5E20',
   },
 
   // Guest Section
@@ -183,11 +183,11 @@ const styles = StyleSheet.create({
   },
   guestText: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.8)',
+    color: 'rgba(0, 0, 0, 0.8)',
   },
   guestLink: {
     fontSize: 14,
-    color: 'white',
+    color: '#1B5E20',
     fontWeight: 'bold',
     textDecorationLine: 'underline',
   },
