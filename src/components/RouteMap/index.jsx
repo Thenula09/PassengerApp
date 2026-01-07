@@ -1,11 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 
 const GOOGLE_MAPS_APIKEY = 'AIzaSyBCCrqECHOid0b_QkiUT3NNrUSMGe55Wb4';
 
-const RouteMap = ({ origin, destination }) => {
+const RouteMap = forwardRef(({ origin, destination, onMapReady }, ref) => {
   const mapRef = useRef(null);
+
+  // Parent component වලට methods expose කිරීම
+  useImperativeHandle(ref, () => ({
+    fitToCoordinates: (coordinates, options) => {
+      if (mapRef.current && mapRef.current.fitToCoordinates) {
+        mapRef.current.fitToCoordinates(coordinates, options);
+      }
+    },
+    getMap: () => mapRef.current,
+  }));
 
   // Handle different data structures
   const getLocation = (place) => {
@@ -40,13 +50,21 @@ const RouteMap = ({ origin, destination }) => {
     if (mapRef.current && originLoc && destinationLoc) {
       // Fit map to show both markers with a delay to ensure map is ready
       setTimeout(() => {
-        mapRef.current.fitToCoordinates([originLoc, destinationLoc], {
-          edgePadding: { top: 80, right: 80, bottom: 80, left: 80 },
-          animated: true,
-        });
+        if (mapRef.current && mapRef.current.fitToCoordinates) {
+          mapRef.current.fitToCoordinates([originLoc, destinationLoc], {
+            edgePadding: { top: 80, right: 80, bottom: 80, left: 80 },
+            animated: true,
+          });
+        }
       }, 1000);
     }
   }, [originLoc, destinationLoc]);
+
+  const handleMapReady = () => {
+    if (onMapReady) {
+      onMapReady();
+    }
+  };
 
   // Default region (Sri Lanka center)
   const defaultRegion = {
@@ -56,6 +74,25 @@ const RouteMap = ({ origin, destination }) => {
     longitudeDelta: 2.0,
   };
 
+  // If no valid locations, show fallback
+  if (!originLoc || !destinationLoc) {
+    return (
+      <MapView
+        style={{ width: '100%', height: '100%' }}
+        provider={PROVIDER_GOOGLE}
+        initialRegion={defaultRegion}
+        onMapReady={handleMapReady}
+      >
+        <Marker
+          coordinate={defaultRegion}
+          title="No Route Available"
+          description="Please check your locations"
+          pinColor="#FF9800"
+        />
+      </MapView>
+    );
+  }
+
   return (
     <MapView
       ref={mapRef}
@@ -63,6 +100,7 @@ const RouteMap = ({ origin, destination }) => {
       provider={PROVIDER_GOOGLE}
       showsUserLocation={true}
       initialRegion={defaultRegion}
+      onMapReady={handleMapReady}
     >
       {originLoc && destinationLoc && (
         <>
@@ -84,7 +122,7 @@ const RouteMap = ({ origin, destination }) => {
             onReady={(result) => {
               console.log(`Route ready - Distance: ${result.distance} km, Duration: ${result.duration} min`);
               // Fit to route coordinates after route is calculated
-              if (mapRef.current) {
+              if (mapRef.current && mapRef.current.fitToCoordinates) {
                 mapRef.current.fitToCoordinates(result.coordinates, {
                   edgePadding: { top: 80, right: 80, bottom: 80, left: 80 },
                   animated: true,
@@ -108,6 +146,9 @@ const RouteMap = ({ origin, destination }) => {
       )}
     </MapView>
   );
-};
+});
+
+// Display name for debugging
+RouteMap.displayName = 'RouteMap';
 
 export default RouteMap;

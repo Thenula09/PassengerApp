@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, FlatList, StatusBar, ScrollView } from 'react-native';
+import { 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  FlatList, 
+  ScrollView,
+  ActivityIndicator 
+} from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 import RouteMap from '../../components/RouteMap';
 import styles from './styles';
-import LinearGradient from 'react-native-linear-gradient';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Toast from 'react-native-toast-message';
@@ -15,42 +20,87 @@ import Header from '../../components/Header';
 const BusDetailsScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { originPlace, destinationPlace } = route.params;
+  const { originPlace, destinationPlace } = route.params || {};
 
   const [availableBuses, setAvailableBuses] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-  const [activeTab, setActiveTab] = useState('buses');
+  const [loading, setLoading] = useState(true);
+  const [isMapReady, setIsMapReady] = useState(false);
 
   useEffect(() => {
     const fetchAvailableBuses = async () => {
       try {
+        setLoading(true);
+        console.log('Fetching buses from Firebase...');
+        
         const snapshot = await database().ref('/buses').once('value');
+        console.log('Firebase snapshot:', snapshot.exists());
+        
+        if (!snapshot.exists()) {
+          console.log('No buses found in database');
+          setAvailableBuses([]);
+          setLoading(false);
+          return;
+        }
+
         const busesData = [];
+        const busesObject = snapshot.val();
+        
+        console.log('Raw buses data:', busesObject);
 
-        snapshot.forEach((childSnapshot) => {
-          const bus = childSnapshot.val();
-          const busId = childSnapshot.key;
+        if (busesObject) {
+          if (typeof busesObject === 'object') {
+            Object.keys(busesObject).forEach(key => {
+              const bus = busesObject[key];
+              
+              if (bus && typeof bus === 'object') {
+                const hasStartLocation = bus.startLocation || bus.start_location;
+                const hasEndLocation = bus.endLocation || bus.end_location;
+                
+                if (hasStartLocation && hasEndLocation) {
+                  const busStart = (bus.startLocation || bus.start_location || '').toString().trim().toLowerCase();
+                  const busEnd = (bus.endLocation || bus.end_location || '').toString().trim().toLowerCase();
+                  const originSearch = (originPlace?.data?.description || '').toString().trim().toLowerCase();
+                  const destinationSearch = (destinationPlace?.data?.description || '').toString().trim().toLowerCase();
 
-          if (
-            bus.startLocation &&
-            bus.endLocation &&
-            originPlace?.data?.description &&
-            destinationPlace?.data?.description
-          ) {
-            if (
-              bus.startLocation.trim().toLowerCase() ===
-                originPlace.data.description.trim().toLowerCase() &&
-              bus.endLocation.trim().toLowerCase() ===
-                destinationPlace.data.description.trim().toLowerCase()
-            ) {
-              busesData.push({ ...bus, busId });
-            }
-          } else {
-            console.warn('Invalid bus data or missing location fields:', bus);
+                  if (!originSearch && !destinationSearch) {
+                    const normalizedBus = {
+                      ...bus,
+                      busId: bus.busId || key,
+                      fare: bus.fare || bus.price || 0,
+                      availableSeats: bus.availableSeats || bus.capacity || 0,
+                      totalSeats: bus.totalSeats || bus.capacity || 45,
+                      busType: bus.busType || (bus.isAC ? 'AC' : 'Standard'),
+                      departureTime: bus.departureTime || 'N/A',
+                      arrivalTime: bus.arrivalTime || 'N/A'
+                    };
+                    busesData.push(normalizedBus);
+                  } else if (busStart === originSearch && busEnd === destinationSearch) {
+                    const normalizedBus = {
+                      ...bus,
+                      busId: bus.busId || key,
+                      fare: bus.fare || bus.price || 0,
+                      availableSeats: bus.availableSeats || bus.capacity || 0,
+                      totalSeats: bus.totalSeats || bus.capacity || 45,
+                      busType: bus.busType || (bus.isAC ? 'AC' : 'Standard'),
+                      departureTime: bus.departureTime || 'N/A',
+                      arrivalTime: bus.arrivalTime || 'N/A'
+                    };
+                    busesData.push(normalizedBus);
+                  }
+                }
+              }
+            });
           }
-        });
+        }
 
+        console.log(`Found ${busesData.length} buses`);
         setAvailableBuses(busesData);
+
+        if (busesData.length === 0) {
+          setErrorMessage('No buses found for this route. Please try another route.');
+        }
+
       } catch (error) {
         console.error('Error fetching buses:', error);
         setErrorMessage('Could not fetch buses. Please try again later.');
@@ -59,26 +109,34 @@ const BusDetailsScreen = () => {
           text1: 'Error',
           text2: 'Could not fetch buses. Please try again later.',
         });
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchAvailableBuses();
   }, [originPlace, destinationPlace]);
 
+  // Handle map ready state
+  const handleMapReady = () => {
+    setIsMapReady(true);
+    console.log('Map is ready');
+  };
+
   const gotoLayout = (bus) => {
     navigation.navigate('Bus Layout', {
       busId: bus.busId,
-      busNumber: bus.busNumber,
-      busName: bus.name || bus.busNumber,
-      departureTime: bus.departureTime,
-      arrivalTime: bus.arrivalTime,
-      price: bus.price,
-      availableSeats: bus.availableSeats,
-      totalSeats: bus.totalSeats || 45,
-      isAC: bus.isAC,
+      busNumber: bus.busNumber || bus.busId,
+      busName: bus.name || bus.busNumber || bus.busId,
+      departureTime: bus.departureTime || 'N/A',
+      arrivalTime: bus.arrivalTime || 'N/A',
+      price: bus.fare || 0,
+      availableSeats: bus.availableSeats || 0,
+      totalSeats: bus.totalSeats || bus.capacity || 45,
+      isAC: bus.busType === 'AC' || bus.isAC,
       busType: bus.busType || 'Standard',
-      startLocation: bus.startLocation,
-      endLocation: bus.endLocation,
+      startLocation: bus.startLocation || bus.start_location || 'Unknown',
+      endLocation: bus.endLocation || bus.end_location || 'Unknown',
     });
   };
 
@@ -86,10 +144,10 @@ const BusDetailsScreen = () => {
     navigation.navigate('BusMapScreen', {
       busData: {
         busId: bus.busId,
-        busNumber: bus.busNumber,
-        departureTime: bus.departureTime,
-        startLocation: bus.startLocation,
-        endLocation: bus.endLocation,
+        busNumber: bus.busNumber || bus.busId,
+        departureTime: bus.departureTime || 'N/A',
+        startLocation: bus.startLocation || bus.start_location || 'Unknown',
+        endLocation: bus.endLocation || bus.end_location || 'Unknown',
       },
       currentLocation: bus.currentLocation || null,
     });
@@ -99,17 +157,14 @@ const BusDetailsScreen = () => {
     navigation.goBack();
   };
 
-  const handleHome = () => {
-    navigation.navigate('Home');
-  };
-
-  const goToBooking = () => {
-    navigation.navigate('Destination');
-  };
-
-  const goToUserProfile = () => {
-    navigation.navigate('UserProfile');
-  };
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#4CAF50" />
+        <Text style={{ marginTop: 10, color: '#666' }}>Loading buses...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -134,34 +189,46 @@ const BusDetailsScreen = () => {
               <View style={styles.locationItem}>
                 <Text style={styles.locationLabel}>From</Text>
                 <Text style={styles.locationText} numberOfLines={1}>
-                  {originPlace?.data?.description || 'Origin'}
+                  {originPlace?.data?.description || 'All Locations'}
                 </Text>
               </View>
               <View style={styles.locationItem}>
                 <Text style={styles.locationLabel}>To</Text>
                 <Text style={styles.locationText} numberOfLines={1}>
-                  {destinationPlace?.data?.description || 'Destination'}
+                  {destinationPlace?.data?.description || 'All Locations'}
                 </Text>
               </View>
             </View>
           </View>
         </View>
 
-        <View style={styles.mapContainer}>
-          <RouteMap origin={originPlace} destination={destinationPlace} />
-        </View>
+        {originPlace && destinationPlace && (
+          <View style={styles.mapContainer}>
+            <RouteMap 
+              origin={originPlace} 
+              destination={destinationPlace}
+              onMapReady={handleMapReady}
+            />
+          </View>
+        )}
 
         <View style={styles.busListSection}>
           {errorMessage ? (
             <View style={styles.errorContainer}>
               <MaterialCommunityIcons name="alert-circle" size={50} color="#F44336" />
               <Text style={styles.errorText}>{errorMessage}</Text>
+              <TouchableOpacity 
+                style={styles.retryButton}
+                onPress={() => navigation.goBack()}
+              >
+                <Text style={styles.retryButtonText}>Try Another Route</Text>
+              </TouchableOpacity>
             </View>
           ) : availableBuses.length > 0 ? (
             <FlatList
               data={availableBuses}
               scrollEnabled={false}
-              keyExtractor={(item, index) => index.toString()}
+              keyExtractor={(item, index) => item.busId || index.toString()}
               renderItem={({ item }) => (
                 <View style={styles.busCard}>
                   <View style={styles.busHeader}>
@@ -169,17 +236,17 @@ const BusDetailsScreen = () => {
                       <FontAwesome5 name="bus" size={28} color="#4CAF50" />
                     </View>
                     <View style={styles.busInfoContainer}>
-                      <Text style={styles.busNumber}>{item.busNumber}</Text>
+                      <Text style={styles.busNumber}>{item.busNumber || item.busId}</Text>
                       <View style={styles.busDetailRow}>
                         <MaterialCommunityIcons name="clock-outline" size={16} color="#666" />
                         <Text style={styles.busDetailText}>
-                          {item.departureTime || 'N/A'}
+                          {item.departureTime || 'N/A'} - {item.arrivalTime || 'N/A'}
                         </Text>
                       </View>
                     </View>
                     <View style={styles.priceContainer}>
                       <Text style={styles.priceLabel}>Price</Text>
-                      <Text style={styles.priceText}>Rs {item.price || '0'}</Text>
+                      <Text style={styles.priceText}>Rs {item.fare || item.price || '0'}</Text>
                     </View>
                   </View>
 
@@ -188,13 +255,13 @@ const BusDetailsScreen = () => {
                       <View style={styles.featureItem}>
                         <MaterialCommunityIcons name="seat-passenger" size={18} color="#4CAF50" />
                         <Text style={styles.featureText}>
-                          {item.availableSeats || 0} seats
+                          {item.availableSeats || 0} seats available
                         </Text>
                       </View>
                       <View style={styles.featureItem}>
                         <MaterialCommunityIcons name="air-conditioner" size={18} color="#4CAF50" />
                         <Text style={styles.featureText}>
-                          {item.isAC ? 'AC' : 'Non-AC'}
+                          {item.busType || (item.isAC ? 'AC' : 'Non-AC')}
                         </Text>
                       </View>
                     </View>
@@ -224,8 +291,14 @@ const BusDetailsScreen = () => {
               <MaterialCommunityIcons name="bus-alert" size={60} color="#999" />
               <Text style={styles.emptyText}>No buses available</Text>
               <Text style={styles.emptySubtext}>
-                No buses found for the selected route. Please try another route.
+                No buses found. Please try another route or check back later.
               </Text>
+              <TouchableOpacity 
+                style={styles.tryAgainButton}
+                onPress={() => navigation.goBack()}
+              >
+                <Text style={styles.tryAgainButtonText}>Try Another Route</Text>
+              </TouchableOpacity>
             </View>
           )}
         </View>
